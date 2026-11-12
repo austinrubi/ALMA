@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useTheme, ALMA_FONTS } from '../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../lib/theme';
 import { useApp } from '../lib/AppContext';
 import { Card, Eyebrow, SerifTitle, DisplayCaps, Medal, Chip, RuleDivider, Watercolor, Button } from '../components/ui';
 
@@ -35,12 +35,12 @@ export default function SeasonOverScreen() {
             backgroundColor: 'rgba(183,151,104,0.18)', borderWidth: 1, borderColor: 'rgba(183,151,104,0.7)',
             alignItems: 'center', justifyContent: 'center',
           }}>
-            <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: 28, color: '#8C6E3A' }}>❖</Text>
+            <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: fs(28), color: '#8C6E3A' }}>❖</Text>
           </View>
           <SerifTitle size={26} style={{ marginTop: 14, textAlign: 'center' }}>
             Congratulations, {champ ? champ.name : 'champions'}.
           </SerifTitle>
-          <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 14.5, color: T.inkSoft, lineHeight: 22, marginTop: 8, textAlign: 'center' }}>
+          <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(14.5), color: T.inkSoft, lineHeight: 22, marginTop: 8, textAlign: 'center' }}>
             {champ ? `${champ.points.toLocaleString()} points across ${S.weekCount || 8} weeks \u2014 the highest cumulative score in the league. ` : ''}
             Thank you to every team for a full season of play.
           </Text>
@@ -59,7 +59,7 @@ export default function SeasonOverScreen() {
                   paddingVertical: 6, paddingHorizontal: 11, borderRadius: 999,
                   backgroundColor: T.surfaceTint, borderWidth: 1, borderColor: T.border,
                 }}>
-                  <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 11.5, letterSpacing: 0.3, color: T.ink }}>{p.name}</Text>
+                  <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(11.5), letterSpacing: 0.3, color: T.ink }}>{p.name}</Text>
                 </View>
               ))}
             </View>
@@ -77,15 +77,15 @@ export default function SeasonOverScreen() {
               paddingVertical: 13, paddingHorizontal: 16,
               borderTopWidth: i ? 1 : 0, borderTopColor: T.border,
             }}>
-              <Text style={{ width: 26, fontFamily: ALMA_FONTS.display, fontSize: 14, color: T.inkMute }}>{i + 2}</Text>
-              <Text style={{ flex: 1, fontFamily: ALMA_FONTS.serif, fontSize: 15.5, color: T.ink }}>{t.name}</Text>
-              <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: 14, color: T.inkSoft }}>{t.points.toLocaleString()}</Text>
+              <Text style={{ width: 26, fontFamily: ALMA_FONTS.display, fontSize: fs(14), color: T.inkMute }}>{i + 2}</Text>
+              <Text style={{ flex: 1, fontFamily: ALMA_FONTS.serif, fontSize: fs(15.5), color: T.ink }}>{t.name}</Text>
+              <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: fs(14), color: T.inkSoft }}>{t.points.toLocaleString()}</Text>
             </View>
           ))}
         </Card>
 
         {myPlace && myTeam && (
-          <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 14, color: T.inkSoft, textAlign: 'center', marginTop: 14, lineHeight: 22 }}>
+          <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(14), color: T.inkSoft, textAlign: 'center', marginTop: 14, lineHeight: 22 }}>
             {myTeam.name} finished {placeWord(myPlace)} with {myTeam.points.toLocaleString()} points.
           </Text>
         )}
@@ -94,17 +94,17 @@ export default function SeasonOverScreen() {
         <View style={{ marginTop: 24 }}><RuleDivider label="What's next" /></View>
         <Card variant="deep" style={{ marginTop: 14, padding: 18 }}>
           <SerifTitle size={20} color={T.inkOnDeep}>Stay tuned for the next season.</SerifTitle>
-          <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 14, color: 'rgba(239,234,217,0.82)', lineHeight: 22, marginTop: 8 }}>
+          <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(14), color: 'rgba(239,234,217,0.82)', lineHeight: 22, marginTop: 8 }}>
             Registration for the next ALMA season opens a few weeks from now. Watch your email and this app — your captain will send a fresh team code when rosters are set.
           </Text>
         </Card>
 
         <View style={{ flexDirection: 'row', gap: 10, marginTop: 14 }}>
           <Button variant="secondary" style={{ flex: 1 }} onPress={() => router.push('/(tabs)/standings')}>
-            <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Final standings</Text>
+            <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Final standings</Text>
           </Button>
           <Button variant="ghost" style={{ flex: 1 }} onPress={() => router.push('/champion')}>
-            <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Replay the finale</Text>
+            <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Replay the finale</Text>
           </Button>
         </View>
       </View>

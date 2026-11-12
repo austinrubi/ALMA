@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, ScrollView, Text, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useTheme, ALMA_FONTS } from '../../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../../lib/theme';
 import { useApp } from '../../lib/AppContext';
 import { captainIdsOf } from '../../lib/roles';
 import { Header } from '../../components/Header';
@@ -26,7 +26,9 @@ export default function ScoreEntryScreen() {
   const [awayScore, setAwayScore] = useState(editing && match.result ? String(match.result.away) : '');
   const [step, setStep] = useState<'pick' | 'done'>('pick');
   const [forfeit, setForfeit] = useState<string | null>(null);
+  const [shortHanded, setShortHanded] = useState<string | null>(null);
   const fp = db.SEASON.forfeitPoints || 75;
+  const shb = db.SEASON.shortHandedBonus || 15;
 
   const clamp = (v: string) => v.replace(/[^0-9]/g, '').slice(0, 3);
   const hs = parseInt(homeScore, 10);
@@ -37,13 +39,14 @@ export default function ScoreEntryScreen() {
     if (forfeit) { app.logForfeit(match.id, forfeit, V.uid); setStep('done'); return; }
     if (editing) app.editScore(match.id, { home: hs, away: as_ }, V.uid);
     else app.logScore(match.id, { home: hs, away: as_ }, V.uid);
+    if (shortHanded) app.logShortHanded(match.id, shortHanded, V.uid);
     setStep('done');
   };
 
   if (step === 'done') {
     return (
       <ScrollView style={{ flex: 1, backgroundColor: T.appBg }} contentContainerStyle={{ paddingTop: insets.top, paddingBottom: 80 }}>
-        <Header back="Match" onBack={() => router.push({ pathname: '/match/[id]', params: { id: match.id } })} />
+        <Header back="Match" onBack={() => router.replace({ pathname: '/match/[id]', params: { id: match.id } })} />
         <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 40, alignItems: 'center', position: 'relative' }}>
           <Watercolor corner="tr" size={300} intensity={0.7} />
           <Watercolor corner="bl" size={240} intensity={0.5} accent="terracotta" />
@@ -57,19 +60,21 @@ export default function ScoreEntryScreen() {
             <View style={{ marginTop: 24 }}>
               <DisplayCaps size={26}>{editing ? 'Score overridden' : 'Score logged'}</DisplayCaps>
             </View>
-            <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 17, color: T.inkSoft, marginTop: 10, lineHeight: 24, textAlign: 'center' }}>
+            <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(17), color: T.inkSoft, marginTop: 10, lineHeight: 24, textAlign: 'center' }}>
               {forfeit
                 ? `${(forfeit === 'home' ? home : away).shortName} forfeited.\n${fp} points to ${(forfeit === 'home' ? away : home).shortName}.`
+                : shortHanded
+                ? `${hs} \u2013 ${as_} is on the books.\n+${shb} bonus to ${(shortHanded === 'home' ? away : home).shortName} for showing up with both players.`
                 : `${hs} \u2013 ${as_} is on the books and\nadded to both season totals.`}
             </Text>
-            <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 11.5, color: T.inkMute, marginTop: 14, lineHeight: 18, textAlign: 'center', letterSpacing: 0.4 }}>
+            <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(11.5), color: T.inkMute, marginTop: 14, lineHeight: 18, textAlign: 'center', letterSpacing: 0.4 }}>
               {editing
                 ? "Your override replaces the pair's entry."
                 : `Locked. Only ${captainIdsOf(home).map(cid => db.PEOPLE[cid]?.name?.split(' ')[0]).join(' or ')} can change it now.`}
             </Text>
             <View style={{ marginTop: 32 }}>
-              <Button variant="primary" onPress={() => router.push({ pathname: '/match/[id]', params: { id: match.id } })}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.inkOnDeep }}>Back to the match</Text>
+              <Button variant="primary" onPress={() => router.replace({ pathname: '/match/[id]', params: { id: match.id } })}>
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.inkOnDeep }}>Back to the match</Text>
               </Button>
             </View>
           </View>
@@ -80,7 +85,7 @@ export default function ScoreEntryScreen() {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: T.appBg }} contentContainerStyle={{ paddingTop: insets.top, paddingBottom: 80 }}>
-      <Header back="Match" onBack={() => router.push({ pathname: '/match/[id]', params: { id: match.id } })}
+      <Header back="Match" onBack={() => router.replace({ pathname: '/match/[id]', params: { id: match.id } })}
         eyebrow={`Week ${match.week} \u00B7 Match ${match.table}`}
         title={editing ? 'Override the score' : 'Log the score'} large />
 
@@ -91,7 +96,7 @@ export default function ScoreEntryScreen() {
           <ScoreField team={home.shortName} sub="Host" value={forfeit ? (forfeit === 'home' ? '0' : String(fp)) : homeScore}
             onChange={v => !forfeit && setHomeScore(clamp(v))} />
           <View style={{ justifyContent: 'center' }}>
-            <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 20, color: T.inkSoft }}>–</Text>
+            <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(20), color: T.inkSoft }}>–</Text>
           </View>
           <ScoreField team={away.shortName} sub="Visitor" value={forfeit ? (forfeit === 'away' ? '0' : String(fp)) : awayScore}
             onChange={v => !forfeit && setAwayScore(clamp(v))} />
@@ -102,7 +107,7 @@ export default function ScoreEntryScreen() {
       <View style={{ paddingHorizontal: 18, paddingTop: 24 }}>
         <SectionLabel>Nobody showed?</SectionLabel>
         <Card variant="quiet" style={{ marginTop: 12, padding: 14 }}>
-          <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 13.5, color: T.inkSoft, lineHeight: 20 }}>
+          <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(13.5), color: T.inkSoft, lineHeight: 20 }}>
             A forfeit gives the pair who turned up {fp} points and the pair who didn't nothing.
           </Text>
           <View style={{ gap: 8, marginTop: 12 }}>
@@ -112,7 +117,7 @@ export default function ScoreEntryScreen() {
                 <Button key={side} variant={on ? 'primary' : 'secondary'} fullWidth
                   onPress={() => setForfeit(on ? null : side)}>
                   <Icon name={on ? 'check' : 'flag'} size={15} color={on ? T.inkOnDeep : T.inkSoft} />
-                  <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 14.5, color: on ? T.inkOnDeep : T.ink }}>{team.shortName} forfeited</Text>
+                  <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(14.5), color: on ? T.inkOnDeep : T.ink }}>{team.shortName} forfeited</Text>
                 </Button>
               );
             })}
@@ -120,15 +125,41 @@ export default function ScoreEntryScreen() {
         </Card>
       </View>
 
+      {/* 3-player match */}
+      {!forfeit && (
+        <View style={{ paddingHorizontal: 18, paddingTop: 24 }}>
+          <SectionLabel>Short-handed?</SectionLabel>
+          <Card variant="quiet" style={{ marginTop: 12, padding: 14 }}>
+            <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(13.5), color: T.inkSoft, lineHeight: 20 }}>
+              If one side only had 1 player while the other had 2, the full side earns a {shb}-point bonus.
+            </Text>
+            <View style={{ gap: 8, marginTop: 12 }}>
+              {([['home', home], ['away', away]] as const).map(([side, team]) => {
+                const on = shortHanded === side;
+                return (
+                  <Button key={side} variant={on ? 'primary' : 'secondary'} fullWidth
+                    onPress={() => setShortHanded(on ? null : side)}>
+                    <Icon name={on ? 'check' : 'users'} size={15} color={on ? T.inkOnDeep : T.inkSoft} />
+                    <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(14.5), color: on ? T.inkOnDeep : T.ink }}>
+                      {team.shortName} played with only 1
+                    </Text>
+                  </Button>
+                );
+              })}
+            </View>
+          </Card>
+        </View>
+      )}
+
       {/* Submit */}
       <View style={{ paddingHorizontal: 18, paddingTop: 24, gap: 8 }}>
         <Button variant="primary" fullWidth disabled={!valid && !forfeit} onPress={submit}>
-          <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.inkOnDeep }}>
+          <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.inkOnDeep }}>
             {forfeit ? 'Submit forfeit' : editing ? 'Submit override' : 'Submit score'}
           </Text>
         </Button>
-        <Button variant="ghost" fullWidth onPress={() => router.push({ pathname: '/match/[id]', params: { id: match.id } })}>
-          <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Cancel</Text>
+        <Button variant="ghost" fullWidth onPress={() => router.replace({ pathname: '/match/[id]', params: { id: match.id } })}>
+          <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Cancel</Text>
         </Button>
       </View>
     </ScrollView>
@@ -139,7 +170,7 @@ function ScoreField({ team, sub, value, onChange }: { team: string; sub: string;
   const T = useTheme();
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
-      <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: T.inkSoft, marginBottom: 8 }}>
+      <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: fs(11), letterSpacing: 2, textTransform: 'uppercase', color: T.inkSoft, marginBottom: 8 }}>
         {team}
       </Text>
       <TextInput
@@ -154,10 +185,10 @@ function ScoreField({ team, sub, value, onChange }: { team: string; sub: string;
           backgroundColor: T.surface,
           borderWidth: 1, borderColor: value ? T.brand : T.border,
           borderRadius: 16,
-          fontFamily: ALMA_FONTS.display, fontSize: 40, color: T.ink,
+          fontFamily: ALMA_FONTS.display, fontSize: fs(40), color: T.ink,
         }}
       />
-      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 10, letterSpacing: 1.5, textTransform: 'uppercase', color: T.inkMute, marginTop: 6 }}>
+      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(10), letterSpacing: 1.5, textTransform: 'uppercase', color: T.inkMute, marginTop: 6 }}>
         {sub}
       </Text>
     </View>

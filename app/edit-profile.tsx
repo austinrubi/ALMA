@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useTheme, ALMA_FONTS } from '../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../lib/theme';
 import { useApp } from '../lib/AppContext';
 import { Header } from '../components/Header';
 import { SectionLabel } from '../components/SectionLabel';
@@ -64,7 +64,7 @@ export default function EditProfileScreen() {
         large
         action={
           <TouchableOpacity onPress={() => router.back()}>
-            <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: T.inkSoft }}>
+            <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(11), letterSpacing: 1.2, textTransform: 'uppercase', color: T.inkSoft }}>
               Cancel
             </Text>
           </TouchableOpacity>
@@ -79,7 +79,7 @@ export default function EditProfileScreen() {
             <TileFace tile={form.tile} size={54} />
             <View style={{ flex: 1 }}>
               <Eyebrow>Your tile</Eyebrow>
-              <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: 15, color: T.ink, marginTop: 3 }}>
+              <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: fs(15), color: T.ink, marginTop: 3 }}>
                 {(TILE_BY_ID[form.tile] || ALMA_TILES[0]).name}
               </Text>
             </View>
@@ -92,7 +92,7 @@ export default function EditProfileScreen() {
               <TouchableOpacity key={tl.id} onPress={() => set('tile', tl.id)} style={{ alignItems: 'center', gap: 5 }}>
                 <TileFace tile={tl.id} size={46} selected={tl.id === form.tile} />
                 <Text style={{
-                  fontFamily: ALMA_FONTS.ui, fontSize: 9, letterSpacing: 0.8,
+                  fontFamily: ALMA_FONTS.ui, fontSize: fs(9), letterSpacing: 0.8,
                   textTransform: 'uppercase', textAlign: 'center',
                   color: tl.id === form.tile ? T.ink : T.inkMute,
                 }}>{tl.short}</Text>
@@ -105,7 +105,7 @@ export default function EditProfileScreen() {
       {/* Contact fields */}
       <View style={{ paddingHorizontal: 18, paddingTop: 22 }}>
         <SectionLabel>Contact</SectionLabel>
-        <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 11, color: T.inkSoft, marginTop: 8, lineHeight: 17 }}>
+        <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(11), color: T.inkSoft, marginTop: 8, lineHeight: 17 }}>
           Visible to your captain and teammates so they can reach you about tables.
         </Text>
         <View style={{ marginTop: 14, gap: 14 }}>
@@ -118,10 +118,10 @@ export default function EditProfileScreen() {
       {/* Save */}
       <View style={{ paddingHorizontal: 18, paddingTop: 22, gap: 8 }}>
         <Button variant="primary" fullWidth disabled={!dirty} onPress={save}>
-          <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.inkOnDeep }}>Save changes</Text>
+          <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.inkOnDeep }}>Save changes</Text>
         </Button>
         <Button variant="ghost" fullWidth onPress={() => router.back()}>
-          <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Back to profile</Text>
+          <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Back to profile</Text>
         </Button>
       </View>
     </ScrollView>

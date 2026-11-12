@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ViewStyle, StyleProp } from 'react-native';
-import { useTheme, ALMA_FONTS } from '../../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../../lib/theme';
 
 interface ChipProps {
   children: React.ReactNode;
@@ -37,7 +37,7 @@ export function Chip({ children, variant = 'default', style }: ChipProps) {
       {typeof children === 'string' ? (
         <Text style={{
           fontFamily: ALMA_FONTS.uiMedium,
-          fontSize: 10,
+          fontSize: fs(10),
           letterSpacing: 1.6,
           textTransform: 'uppercase',
           color: v.fg,

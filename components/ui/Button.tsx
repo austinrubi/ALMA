@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, ViewStyle, StyleProp, View } from 'react-native';
-import { useTheme, ALMA_FONTS, RADII } from '../../lib/theme';
+import { useTheme, ALMA_FONTS, RADII , fs } from '../../lib/theme';
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -25,9 +25,9 @@ export function Button({ children, variant = 'primary', size = 'md', onPress, di
   };
 
   const sizes: Record<string, { paddingVertical: number; paddingHorizontal: number; fontSize: number; borderRadius: number }> = {
-    sm: { paddingVertical: 8, paddingHorizontal: 14, fontSize: 12, borderRadius: RADII.pill },
-    md: { paddingVertical: 12, paddingHorizontal: 22, fontSize: 14, borderRadius: RADII.pill },
-    lg: { paddingVertical: 14, paddingHorizontal: 28, fontSize: 15, borderRadius: RADII.pill },
+    sm: { paddingVertical: 8, paddingHorizontal: 14, fontSize: fs(12), borderRadius: RADII.pill },
+    md: { paddingVertical: 12, paddingHorizontal: 22, fontSize: fs(14), borderRadius: RADII.pill },
+    lg: { paddingVertical: 14, paddingHorizontal: 28, fontSize: fs(15), borderRadius: RADII.pill },
   };
 
   const v = variants[variant];

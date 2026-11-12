@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, ScrollView, Text, ActivityIndicator } from 'react-native';
+import { View, ScrollView, Text, Image, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useTheme, ALMA_FONTS } from '../../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../../lib/theme';
 import { useApp } from '../../lib/AppContext';
 import { viewerOf, teamOf, isCaptainOf } from '../../lib/roles';
 import { Header } from '../../components/Header';
@@ -48,8 +48,11 @@ export default function HomeScreen() {
       {/* Hero — your table this week */}
       {myMatch && opp && (
         <View style={{ paddingHorizontal: 18 }}>
-          <Card variant="deep" style={{ padding: 26, position: 'relative' }}>
+          <Card variant="deep" style={{ padding: 26, position: 'relative', overflow: 'hidden' }}>
             <Watercolor corner="tr" size={340} intensity={0.9} />
+            <Image source={require('../../assets/images/peacock.png')}
+              style={{ position: 'absolute', left: -100, bottom: -80, width: 280, height: 280, opacity: 0.2, transform: [{ scaleX: -1 }] }}
+              resizeMode="contain" />
             <View style={{ position: 'relative' }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <Eyebrow color={T.heroEyebrow}>{`Your table \u00B7 Match ${myMatch.table}`}</Eyebrow>
@@ -61,7 +64,7 @@ export default function HomeScreen() {
 
               <View style={{ marginTop: 28 }}>
                 <DisplayCaps size={34} color={T.inkOnDeep}>{myTeam.shortName}</DisplayCaps>
-                <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 16, color: 'rgba(239,234,217,0.65)', marginVertical: 6 }}>vs.</Text>
+                <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(16), color: 'rgba(239,234,217,0.65)', marginVertical: 6 }}>vs.</Text>
                 <DisplayCaps size={34} color={T.inkOnDeep}>{opp.shortName}</DisplayCaps>
               </View>
 
@@ -83,7 +86,7 @@ export default function HomeScreen() {
               </View>
 
               <View style={{ marginTop: 24 }}>
-                <Button variant="onDeep" size="sm">Open match</Button>
+                <Button variant="onDeep" size="sm" onPress={() => router.push({ pathname: '/match/[id]', params: { id: myMatch.id } })}>Open match</Button>
               </View>
             </View>
           </Card>
@@ -93,8 +96,11 @@ export default function HomeScreen() {
       {/* Not seated */}
       {!myMatch && (
         <View style={{ paddingHorizontal: 18 }}>
-          <Card variant="deep" style={{ padding: 26, position: 'relative' }}>
+          <Card variant="deep" style={{ padding: 26, position: 'relative', overflow: 'hidden' }}>
             <Watercolor corner="tr" size={340} intensity={0.9} />
+            <Image source={require('../../assets/images/peacock.png')}
+              style={{ position: 'absolute', left: -100, bottom: -80, width: 280, height: 280, opacity: 0.2, transform: [{ scaleX: -1 }] }}
+              resizeMode="contain" />
             <View style={{ position: 'relative' }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <Eyebrow color={T.heroEyebrow}>No table yet</Eyebrow>
@@ -107,16 +113,16 @@ export default function HomeScreen() {
                 <DisplayCaps size={34} color={T.inkOnDeep}>{myTeam.shortName}</DisplayCaps>
                 {opp && (
                   <>
-                    <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 16, color: 'rgba(239,234,217,0.65)', marginVertical: 6 }}>vs.</Text>
+                    <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(16), color: 'rgba(239,234,217,0.65)', marginVertical: 6 }}>vs.</Text>
                     <DisplayCaps size={34} color={T.inkOnDeep}>{opp.shortName}</DisplayCaps>
                   </>
                 )}
-                <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 15, color: 'rgba(239,234,217,0.75)', lineHeight: 22, marginTop: 14 }}>
+                <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(15), color: 'rgba(239,234,217,0.75)', lineHeight: 22, marginTop: 14 }}>
                   You're not at a table this week yet.
                 </Text>
               </View>
               <View style={{ marginTop: 24 }}>
-                <Button variant="onDeep" size="sm">Take a seat</Button>
+                <Button variant="onDeep" size="sm" onPress={() => router.push('/(tabs)/schedule')}>View this week's matches</Button>
               </View>
             </View>
           </Card>
@@ -126,7 +132,7 @@ export default function HomeScreen() {
       {/* Score to log */}
       {toLog && (
         <View style={{ paddingHorizontal: 18, paddingTop: 16 }}>
-          <Card style={{
+          <Card onPress={() => router.push({ pathname: '/score/[id]', params: { id: toLog.id } })} style={{
             padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12,
             borderColor: T.accent, borderWidth: 1,
           }}>
@@ -135,7 +141,7 @@ export default function HomeScreen() {
             </View>
             <View style={{ flex: 1 }}>
               <Eyebrow color={T.accent}>You host · score not logged</Eyebrow>
-              <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: 15.5, color: T.ink, marginTop: 2 }}>
+              <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: fs(15.5), color: T.ink, marginTop: 2 }}>
                 Log Match {toLog.table} once you've played.
               </Text>
             </View>
@@ -152,7 +158,7 @@ export default function HomeScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Eyebrow>Resources</Eyebrow>
-            <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 15.5, color: T.ink, marginTop: 2 }}>
+            <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(15.5), color: T.ink, marginTop: 2 }}>
               Rulebook, scorecard, and FAQs
             </Text>
           </View>
@@ -167,7 +173,7 @@ function InfoRow({ icon, color, children }: { icon: string; color: string; child
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
       <Icon name={icon} size={14} color={color} />
-      <Text style={{ fontFamily: 'Jost_400Regular', fontSize: 13, color }}>{children}</Text>
+      <Text style={{ fontFamily: 'Jost_400Regular', fontSize: fs(13), color }}>{children}</Text>
     </View>
   );
 }

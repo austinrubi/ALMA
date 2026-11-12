@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { View, Text } from 'react-native';
-import { useTheme, ALMA_FONTS } from '../../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../../lib/theme';
 import { Icon } from '../../components/ui';
 
 const TAB_ICON_MAP: Record<string, string> = {
@@ -41,7 +41,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: T.inkMute,
         tabBarLabelStyle: {
           fontFamily: ALMA_FONTS.uiSemiBold,
-          fontSize: 10,
+          fontSize: fs(10),
           letterSpacing: 0.5,
           marginTop: 2,
         },

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
-import { useTheme, ALMA_FONTS } from '../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../lib/theme';
 import { Eyebrow, DisplayCaps, SerifTitle, Icon } from './ui';
 
 interface HeaderProps {
@@ -12,9 +12,10 @@ interface HeaderProps {
   dark?: boolean;
   large?: boolean;
   italic?: boolean;
+  titleColor?: string;
 }
 
-export function Header({ title, eyebrow, back, onBack, action, dark = false, large = true, italic = false }: HeaderProps) {
+export function Header({ title, eyebrow, back, onBack, action, dark = false, large = true, italic = false, titleColor }: HeaderProps) {
   const T = useTheme();
   const fg = dark ? T.inkOnDeep : T.ink;
   const fgSoft = dark ? 'rgba(239,234,217,0.7)' : T.inkSoft;
@@ -25,7 +26,7 @@ export function Header({ title, eyebrow, back, onBack, action, dark = false, lar
         {back ? (
           <TouchableOpacity onPress={onBack} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <Icon name="chevronLeft" size={18} color={fg} />
-            <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 13, letterSpacing: 0.5, color: fg }}>{back}</Text>
+            <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(13), letterSpacing: 0.5, color: fg }}>{back}</Text>
           </TouchableOpacity>
         ) : <View />}
         {action || <View />}
@@ -38,9 +39,9 @@ export function Header({ title, eyebrow, back, onBack, action, dark = false, lar
       {title && (
         <View style={{ marginTop: 6 }}>
           {italic ? (
-            <SerifTitle size={large ? 30 : 22} italic color={fg}>{title}</SerifTitle>
+            <SerifTitle size={large ? 30 : 22} italic color={titleColor || fg}>{title}</SerifTitle>
           ) : (
-            <DisplayCaps size={large ? 28 : 20} color={fg}>{title}</DisplayCaps>
+            <DisplayCaps size={large ? 28 : 20} color={titleColor || fg}>{title}</DisplayCaps>
           )}
         </View>
       )}

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, ScrollView, Text, Animated, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useTheme, ALMA_FONTS } from '../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../lib/theme';
 import { useApp } from '../lib/AppContext';
 import { Eyebrow, DisplayCaps, Medal, Watercolor, Button } from '../components/ui';
 
@@ -56,23 +56,23 @@ export default function ChampionScreen() {
             transform: [{ translateY: dropY }, { scale: dropScale }],
             opacity: fadeIn,
           }}>
-            <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: 34, color: '#E8CFA4' }}>❖</Text>
+            <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: fs(34), color: '#E8CFA4' }}>❖</Text>
           </Animated.View>
 
           <Animated.View style={{ opacity: fadeIn, marginTop: 16 }}>
-            <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(239,234,217,0.7)', textAlign: 'center' }}>
+            <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(10), letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(239,234,217,0.7)', textAlign: 'center' }}>
               Season champion
             </Text>
           </Animated.View>
 
           <Animated.View style={{ transform: [{ translateY: dropY }, { scale: dropScale }], opacity: fadeIn, marginTop: 6 }}>
-            <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: 34, color: T.inkOnDeep, textAlign: 'center', lineHeight: 40 }}>
+            <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: fs(34), color: T.inkOnDeep, textAlign: 'center', lineHeight: 40 }}>
               {winner.name}
             </Text>
           </Animated.View>
 
           <Animated.View style={{ opacity: fadeIn, marginTop: 10 }}>
-            <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: 22, letterSpacing: 1.5, color: '#E8CFA4', textAlign: 'center' }}>
+            <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: fs(22), letterSpacing: 1.5, color: '#E8CFA4', textAlign: 'center' }}>
               {winner.points.toLocaleString()} PTS
             </Text>
           </Animated.View>
@@ -93,18 +93,18 @@ export default function ChampionScreen() {
               flexDirection: 'row', gap: 8, paddingVertical: 10, paddingHorizontal: 14,
               borderBottomWidth: 1, borderBottomColor: 'rgba(239,234,217,0.16)',
             }}>
-              <Text style={{ width: 32, fontFamily: ALMA_FONTS.ui, fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(239,234,217,0.6)' }}>#</Text>
-              <Text style={{ flex: 1, fontFamily: ALMA_FONTS.ui, fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(239,234,217,0.6)' }}>Team</Text>
-              <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(239,234,217,0.6)' }}>Cumulative</Text>
+              <Text style={{ width: 32, fontFamily: ALMA_FONTS.ui, fontSize: fs(9), letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(239,234,217,0.6)' }}>#</Text>
+              <Text style={{ flex: 1, fontFamily: ALMA_FONTS.ui, fontSize: fs(9), letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(239,234,217,0.6)' }}>Team</Text>
+              <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(9), letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(239,234,217,0.6)' }}>Cumulative</Text>
             </View>
             {/* Winner row */}
             <View style={{
               flexDirection: 'row', gap: 8, paddingVertical: 13, paddingHorizontal: 14,
               backgroundColor: 'rgba(183,151,104,0.16)', alignItems: 'center',
             }}>
-              <Text style={{ width: 32, fontFamily: ALMA_FONTS.display, fontSize: 15, color: '#E8CFA4' }}>1</Text>
-              <Text style={{ flex: 1, fontFamily: ALMA_FONTS.serif, fontSize: 16, color: T.inkOnDeep }}>{winner.shortName}</Text>
-              <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: 18, color: '#E8CFA4' }}>{winner.points.toLocaleString()}</Text>
+              <Text style={{ width: 32, fontFamily: ALMA_FONTS.display, fontSize: fs(15), color: '#E8CFA4' }}>1</Text>
+              <Text style={{ flex: 1, fontFamily: ALMA_FONTS.serif, fontSize: fs(16), color: T.inkOnDeep }}>{winner.shortName}</Text>
+              <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: fs(18), color: '#E8CFA4' }}>{winner.points.toLocaleString()}</Text>
             </View>
             {/* Runners */}
             {rest.map((t, i) => (
@@ -112,19 +112,19 @@ export default function ChampionScreen() {
                 flexDirection: 'row', gap: 8, paddingVertical: 11, paddingHorizontal: 14,
                 borderTopWidth: 1, borderTopColor: 'rgba(239,234,217,0.10)', alignItems: 'center',
               }}>
-                <Text style={{ width: 32, fontFamily: ALMA_FONTS.ui, fontSize: 11, color: 'rgba(239,234,217,0.66)' }}>{i + 2}</Text>
-                <Text style={{ flex: 1, fontFamily: ALMA_FONTS.serif, fontSize: 15, color: 'rgba(239,234,217,0.88)' }}>{t.shortName}</Text>
-                <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: 15, color: 'rgba(239,234,217,0.8)' }}>{t.points.toLocaleString()}</Text>
+                <Text style={{ width: 32, fontFamily: ALMA_FONTS.ui, fontSize: fs(11), color: 'rgba(239,234,217,0.66)' }}>{i + 2}</Text>
+                <Text style={{ flex: 1, fontFamily: ALMA_FONTS.serif, fontSize: fs(15), color: 'rgba(239,234,217,0.88)' }}>{t.shortName}</Text>
+                <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: fs(15), color: 'rgba(239,234,217,0.8)' }}>{t.points.toLocaleString()}</Text>
               </View>
             ))}
           </View>
 
           <View style={{ flexDirection: 'row', gap: 10, marginTop: 16 }}>
             <Button variant="onDeep" style={{ flex: 1 }} onPress={() => router.push('/(tabs)/standings')}>
-              <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Final standings</Text>
+              <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Final standings</Text>
             </Button>
             <Button variant="ghost" style={{ flex: 1, borderWidth: 1, borderColor: 'rgba(239,234,217,0.35)' }} onPress={() => setRun(r => r + 1)}>
-              <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: 'rgba(239,234,217,0.85)' }}>Replay</Text>
+              <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: 'rgba(239,234,217,0.85)' }}>Replay</Text>
             </Button>
           </View>
         </Animated.View>

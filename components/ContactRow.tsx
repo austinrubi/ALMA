@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Linking } from 'react-native';
-import { useTheme, ALMA_FONTS } from '../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../lib/theme';
 import { Icon } from './ui';
 
 interface ContactRowProps {
@@ -27,8 +27,8 @@ export function ContactRow({ icon, label, value, href, divider }: ContactRowProp
         <Icon name={icon} size={15} color={T.ink} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: T.inkSoft }}>{label}</Text>
-        <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 15, color: T.ink, marginTop: 2 }} numberOfLines={1}>{value}</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(9), letterSpacing: 2, textTransform: 'uppercase', color: T.inkSoft }}>{label}</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(15), color: T.ink, marginTop: 2 }} numberOfLines={1}>{value}</Text>
       </View>
       <Icon name="chevronRight" size={16} color={T.inkSoft} />
     </View>

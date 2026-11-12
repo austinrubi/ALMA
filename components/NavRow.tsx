@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useTheme, ALMA_FONTS } from '../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../lib/theme';
 import { Icon } from './ui';
 
 interface NavRowProps {
@@ -27,8 +27,8 @@ export function NavRow({ icon, label, sub, onPress, divider }: NavRowProps) {
         <Icon name={icon} size={16} color={T.ink} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 15, color: T.ink }}>{label}</Text>
-        <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 11, color: T.inkSoft, marginTop: 2 }}>{sub}</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(15), color: T.ink }}>{label}</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(11), color: T.inkSoft, marginTop: 2 }}>{sub}</Text>
       </View>
       <Icon name="chevronRight" size={16} color={T.inkSoft} />
     </TouchableOpacity>

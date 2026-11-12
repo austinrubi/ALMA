@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, ScrollView, Text } from 'react-native';
+import { View, ScrollView, Text, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTheme, ALMA_FONTS } from '../../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../../lib/theme';
 import { useApp } from '../../lib/AppContext';
 import { teamOf } from '../../lib/roles';
 import { Header } from '../../components/Header';
@@ -27,6 +27,9 @@ export default function StandingsScreen() {
       <View style={{ paddingHorizontal: 18 }}>
         <Card variant="deep" style={{ padding: 18, position: 'relative', overflow: 'hidden' }}>
           <Watercolor corner="tr" size={220} intensity={0.85} />
+          <Image source={require('../../assets/images/peacock.png')}
+            style={{ position: 'absolute', left: -100, bottom: -80, width: 280, height: 280, opacity: 0.2, transform: [{ scaleX: -1 }] }}
+            resizeMode="contain" />
           <Eyebrow color={T.heroEyebrow}>{`Top of the table \u00B7 Week ${db.SEASON.currentWeek}`}</Eyebrow>
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 14, alignItems: 'flex-end', position: 'relative' }}>
             {teams.slice(0, 3).map((t, i) => {
@@ -37,7 +40,7 @@ export default function StandingsScreen() {
               return (
                 <View key={t.id} style={{ flex: 1, alignItems: 'center', order: order.indexOf(i) }}>
                   <Text style={{
-                    fontFamily: ALMA_FONTS.serifSemiBold, fontSize: 14,
+                    fontFamily: ALMA_FONTS.serifSemiBold, fontSize: fs(14),
                     color: T.inkOnDeep, textAlign: 'center', marginBottom: 6, lineHeight: 17,
                   }}>{t.shortName}</Text>
                   <View style={{
@@ -47,7 +50,7 @@ export default function StandingsScreen() {
                     borderTopLeftRadius: 12, borderTopRightRadius: 12,
                     alignItems: 'center', justifyContent: 'center', gap: 4,
                   }}>
-                    <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: 22, color: T.inkOnDeep }}>
+                    <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: fs(22), color: T.inkOnDeep }}>
                       {t.points.toLocaleString()}
                     </Text>
                     <Medal tier={tier}>{place === 1 ? 'Gold' : place === 2 ? 'Silver' : 'Bronze'}</Medal>
@@ -69,16 +72,13 @@ export default function StandingsScreen() {
             paddingVertical: 10, paddingHorizontal: 14,
             backgroundColor: T.surfaceAlt, borderBottomWidth: 1, borderBottomColor: T.border,
           }}>
-            <Text style={{ width: 28, fontFamily: ALMA_FONTS.uiMedium, fontSize: 10, letterSpacing: 1.6, textTransform: 'uppercase', color: T.inkSoft }}>#</Text>
-            <Text style={{ flex: 1, fontFamily: ALMA_FONTS.uiMedium, fontSize: 10, letterSpacing: 1.6, textTransform: 'uppercase', color: T.inkSoft }}>Team</Text>
-            <Text style={{ width: 64, textAlign: 'right', fontFamily: ALMA_FONTS.uiMedium, fontSize: 10, letterSpacing: 1.6, textTransform: 'uppercase', color: T.inkSoft }}>Points</Text>
-            <View style={{ width: 26 }} />
+            <Text style={{ width: 28, fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(10), letterSpacing: 1.6, textTransform: 'uppercase', color: T.inkSoft }}>#</Text>
+            <Text style={{ flex: 1, fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(10), letterSpacing: 1.6, textTransform: 'uppercase', color: T.inkSoft }}>Team</Text>
+            <Text style={{ width: 64, textAlign: 'right', fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(10), letterSpacing: 1.6, textTransform: 'uppercase', color: T.inkSoft }}>Points</Text>
           </View>
 
           {teams.map((t, i) => {
             const isMe = myTeam && t.id === myTeam.id;
-            const arrow = t.prev > 0 ? 'arrowUp' : t.prev < 0 ? 'arrowDown' : 'minus';
-            const arrowColor = t.prev > 0 ? T.sage : t.prev < 0 ? T.accent : T.inkMute;
             return (
               <View key={t.id} style={{
                 flexDirection: 'row', alignItems: 'center', gap: 8,
@@ -86,22 +86,19 @@ export default function StandingsScreen() {
                 backgroundColor: isMe ? 'rgba(127,162,182,0.10)' : 'transparent',
                 borderBottomWidth: i < teams.length - 1 ? 1 : 0, borderBottomColor: T.border,
               }}>
-                <Text style={{ width: 28, fontFamily: ALMA_FONTS.display, fontSize: 14, color: T.ink }}>{i + 1}</Text>
+                <Text style={{ width: 28, fontFamily: ALMA_FONTS.display, fontSize: fs(14), color: T.ink }}>{i + 1}</Text>
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: 14, color: T.ink }}>{t.shortName}</Text>
-                  {isMe && <Chip variant="default"><Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 8, letterSpacing: 1.2, color: T.ink }}>You</Text></Chip>}
+                  <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: fs(14), color: T.ink }}>{t.shortName}</Text>
+                  {isMe && <Chip variant="default"><Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(8), letterSpacing: 1.2, color: T.ink }}>You</Text></Chip>}
                 </View>
-                <Text style={{ width: 64, textAlign: 'right', fontFamily: ALMA_FONTS.display, fontSize: 15, color: T.ink }}>{t.points.toLocaleString()}</Text>
-                <View style={{ width: 26, alignItems: 'flex-end' }}>
-                  <Icon name={arrow} size={14} color={arrowColor} strokeWidth={2} />
-                </View>
+                <Text style={{ width: 64, textAlign: 'right', fontFamily: ALMA_FONTS.display, fontSize: fs(15), color: T.ink }}>{t.points.toLocaleString()}</Text>
               </View>
             );
           })}
         </Card>
       </View>
 
-      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 11, color: T.inkMute, lineHeight: 17, textAlign: 'center', paddingHorizontal: 18, paddingTop: 14 }}>
+      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(11), color: T.inkMute, lineHeight: 17, textAlign: 'center', paddingHorizontal: 18, paddingTop: 14 }}>
         Ranking is the running sum of every match score this season.
       </Text>
     </ScrollView>

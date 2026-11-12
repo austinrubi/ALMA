@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useTheme, ALMA_FONTS } from '../../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../../lib/theme';
 import { useApp } from '../../lib/AppContext';
 import { weeksAnsweredCount, seasonWeeks } from '../../lib/availability';
 import { Header } from '../../components/Header';
@@ -43,11 +43,11 @@ export default function ProfileScreen() {
             <SerifTitle size={22} style={{ marginTop: 4 }}>{me?.name}</SerifTitle>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
               <Chip variant={V.isPlayer ? 'default' : 'accent'} style={{ paddingVertical: 2, paddingHorizontal: 6 }}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 8, letterSpacing: 1.2, textTransform: 'uppercase', color: V.isPlayer ? T.ink : '#6E4234' }}>
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(8), letterSpacing: 1.2, textTransform: 'uppercase', color: V.isPlayer ? T.ink : '#6E4234' }}>
                   {V.def.chip}
                 </Text>
               </Chip>
-              <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 12, color: T.inkSoft, marginLeft: 4 }}>
+              <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(12), color: T.inkSoft, marginLeft: 4 }}>
                 {myTeam ? myTeam.shortName : 'No team yet'}
               </Text>
             </View>
@@ -81,15 +81,9 @@ export default function ProfileScreen() {
         </Card>
       </View>
 
-      {/* Dev role switcher */}
-      <View style={{ paddingHorizontal: 18, paddingTop: 24 }}>
-        <SectionLabel>Dev Tools</SectionLabel>
-        <RoleSwitcher />
-      </View>
-
       <View style={{ paddingTop: 20, alignItems: 'center' }}>
         <TouchableOpacity onPress={() => app.signOut()}>
-          <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 12, color: T.inkMute, letterSpacing: 1, textTransform: 'uppercase' }}>
+          <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(12), color: T.inkMute, letterSpacing: 1, textTransform: 'uppercase' }}>
             Sign out
           </Text>
         </TouchableOpacity>
@@ -122,8 +116,8 @@ function RoleSwitcher() {
               borderWidth: 1, borderColor: on ? T.brand : T.border,
             }}>
             <View>
-              <Text style={{ fontFamily: ALMA_FONTS.uiSemiBold, fontSize: 13, color: on ? T.inkOnDeep : T.ink }}>{r.label}</Text>
-              <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 10, color: on ? 'rgba(239,234,217,0.7)' : T.inkSoft, marginTop: 1 }}>{r.who}</Text>
+              <Text style={{ fontFamily: ALMA_FONTS.uiSemiBold, fontSize: fs(13), color: on ? T.inkOnDeep : T.ink }}>{r.label}</Text>
+              <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(10), color: on ? 'rgba(239,234,217,0.7)' : T.inkSoft, marginTop: 1 }}>{r.who}</Text>
             </View>
             {on && <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: T.inkOnDeep }} />}
           </TouchableOpacity>
@@ -134,30 +128,30 @@ function RoleSwitcher() {
       <Eyebrow>Flows</Eyebrow>
       <TouchableOpacity onPress={() => router.push('/(auth)/sign-in')}
         style={{ padding: 10, borderRadius: 10, backgroundColor: T.surface, borderWidth: 1, borderColor: T.border }}>
-        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 12, color: T.ink }}>Welcome / Sign-in screen</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(12), color: T.ink }}>Welcome / Sign-in screen</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => router.push('/(auth)/sign-up')}
         style={{ padding: 10, borderRadius: 10, backgroundColor: T.surface, borderWidth: 1, borderColor: T.border }}>
-        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 12, color: T.ink }}>Sign-up flow</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(12), color: T.ink }}>Sign-up flow</Text>
       </TouchableOpacity>
 
       <View style={{ height: 1, backgroundColor: T.border, marginVertical: 4 }} />
       <Eyebrow>Season phases</Eyebrow>
       <TouchableOpacity onPress={() => router.push('/preseason')}
         style={{ padding: 10, borderRadius: 10, backgroundColor: T.surface, borderWidth: 1, borderColor: T.border }}>
-        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 12, color: T.ink }}>Preseason</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(12), color: T.ink }}>Preseason</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => router.push('/season-over')}
         style={{ padding: 10, borderRadius: 10, backgroundColor: T.surface, borderWidth: 1, borderColor: T.border }}>
-        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 12, color: T.ink }}>Season over</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(12), color: T.ink }}>Season over</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => router.push('/champion')}
         style={{ padding: 10, borderRadius: 10, backgroundColor: T.surface, borderWidth: 1, borderColor: T.border }}>
-        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 12, color: T.ink }}>Champion celebration</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(12), color: T.ink }}>Champion celebration</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => router.push('/admin')}
         style={{ padding: 10, borderRadius: 10, backgroundColor: T.surface, borderWidth: 1, borderColor: T.border }}>
-        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 12, color: T.ink }}>Admin console</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(12), color: T.ink }}>Admin console</Text>
       </TouchableOpacity>
     </Card>
   );

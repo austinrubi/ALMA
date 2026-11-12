@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ViewStyle, StyleProp } from 'react-native';
-import { useTheme, ALMA_FONTS } from '../../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../../lib/theme';
 
 interface MedalProps {
   tier?: 'gold' | 'jade' | 'terracotta';
@@ -29,10 +29,10 @@ export function Medal({ tier = 'gold', children, style }: MedalProps) {
       alignItems: 'center',
       gap: 4,
     }, style]}>
-      <Text style={{ fontSize: 12, color: v.fg }}>{'❖'}</Text>
+      <Text style={{ fontSize: fs(12), color: v.fg }}>{'❖'}</Text>
       <Text style={{
         fontFamily: ALMA_FONTS.displayBold,
-        fontSize: 11,
+        fontSize: fs(11),
         letterSpacing: 2,
         textTransform: 'uppercase',
         color: v.fg,

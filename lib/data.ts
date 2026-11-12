@@ -48,56 +48,8 @@ const TEAMS: Team[] = [
     roster: ['u8'] },
 ];
 
-const MATCHES: Match[] = [
-  // Week 4 — Sparrows host Bamboos
-  { id: 'm1', week: 4, table: 1, type: 'tournament', home: 't1', away: 't2',
-    seats: { home: ['u1','u13'], away: ['u2','u20'] }, status: 'final',
-    plan: { when: 'Tuesday, May 19 · 10:00 AM', where: 'Ansley Club, card room', by: 'u13' },
-    result: { home: 544, away: 498 }, enteredBy: 'u13', enteredAt: '2026-05-19T21:40:00' },
-  { id: 'm2', week: 4, table: 2, type: 'tournament', home: 't1', away: 't2',
-    seats: { home: ['u14','u15'], away: ['u21','u22'] }, status: 'final',
-    result: { home: 471, away: 602 }, enteredBy: 'u14', enteredAt: '2026-05-20T22:05:00' },
-  { id: 'm3', week: 4, table: 3, type: 'tournament', home: 't1', away: 't2',
-    seats: { home: ['u16','u17'], away: [null, null] }, status: 'open', result: null },
-  { id: 'm4', week: 4, table: 4, type: 'tournament', home: 't1', away: 't2',
-    seats: { home: ['u18','u19'], away: [null, null] }, status: 'open', result: null },
-  // Week 3 — Sparrows hosted Magnolias
-  { id: 'm5', week: 3, table: 1, type: 'tournament', home: 't1', away: 't3',
-    seats: { home: ['u1','u17'], away: ['u3', null] }, status: 'final',
-    result: { home: 512, away: 476 }, enteredBy: 'u17', enteredAt: '2026-05-12T22:14:00' },
-  { id: 'm6', week: 3, table: 2, type: 'tournament', home: 't1', away: 't3',
-    seats: { home: ['u13','u15'], away: [null, null] }, status: 'final',
-    result: { home: 588, away: 401 }, enteredBy: 'u13', enteredAt: '2026-05-10T18:02:00' },
-  { id: 'm7', week: 3, table: 3, type: 'tournament', home: 't1', away: 't3',
-    seats: { home: ['u14','u16'], away: [null, null] }, status: 'final',
-    result: { home: 437, away: 610 }, enteredBy: 'u16', enteredAt: '2026-05-08T20:31:00',
-    editedBy: 'u1', editedAt: '2026-05-09T09:12:00' },
-  { id: 'm8', week: 3, table: 4, type: 'tournament', home: 't1', away: 't3',
-    seats: { home: ['u18','u19'], away: [null, null] }, status: 'final',
-    result: { home: 503, away: 472 }, enteredBy: 'u19', enteredAt: '2026-05-08T21:15:00' },
-  // Week 5 — Dragons host Sparrows
-  { id: 'm9',  week: 5, table: 1, type: 'tournament', home: 't4', away: 't1',
-    seats: { home: ['u4', null], away: [null, null] }, status: 'open', result: null },
-  { id: 'm10', week: 5, table: 2, type: 'tournament', home: 't4', away: 't1',
-    seats: { home: [null, null], away: [null, null] }, status: 'open', result: null },
-  { id: 'm11', week: 5, table: 3, type: 'tournament', home: 't4', away: 't1',
-    seats: { home: [null, null], away: [null, null] }, status: 'open', result: null },
-  { id: 'm12', week: 5, table: 4, type: 'tournament', home: 't4', away: 't1',
-    seats: { home: [null, null], away: [null, null] }, status: 'open', result: null },
-  // Week 1 — Sparrows hosted Cranes (all final)
-  { id: 'm13', week: 1, table: 1, type: 'tournament', home: 't1', away: 't5',
-    seats: { home: ['u1','u15'], away: ['u5', null] }, status: 'final',
-    result: { home: 521, away: 468 }, enteredBy: 'u15', enteredAt: '2026-04-29T21:10:00' },
-  { id: 'm14', week: 1, table: 2, type: 'tournament', home: 't1', away: 't5',
-    seats: { home: ['u13','u14'], away: [null, null] }, status: 'final',
-    result: { home: 486, away: 533 }, enteredBy: 'u13', enteredAt: '2026-04-30T20:25:00' },
-  { id: 'm15', week: 1, table: 3, type: 'tournament', home: 't1', away: 't5',
-    seats: { home: ['u16','u18'], away: [null, null] }, status: 'final',
-    result: { home: 574, away: 442 }, enteredBy: 'u16', enteredAt: '2026-05-01T19:48:00' },
-  { id: 'm16', week: 1, table: 4, type: 'tournament', home: 't1', away: 't5',
-    seats: { home: ['u17','u19'], away: [null, null] }, status: 'final',
-    result: { home: 455, away: 507 }, enteredBy: 'u19', enteredAt: '2026-05-02T22:02:00' },
-];
+// Matches are empty until the admin generates and finalizes the schedule
+const MATCHES: Match[] = [];
 
 const ANNOUNCEMENTS: Announcement[] = [
   { id: 'a1', date: '2026-05-13', title: 'East Wind Open registration is open',
@@ -114,6 +66,7 @@ const DOCUMENTS: Document[] = [
   { id: 'd5', cat: 'League',  title: 'Code of Conduct & Hold-Harmless',        pages: 4,  role: 'all',     updated: '2026-03-01' },
   { id: 'd6', cat: 'League',  title: 'Spring 2026 Season Packet',              pages: 18, role: 'all',     updated: '2026-03-25' },
   { id: 'd7', cat: 'League',  title: 'Atlanta League · Member Directory',      pages: 9,  role: 'all',     updated: '2026-05-01' },
+  { id: 'd8', cat: 'Rules',   title: 'ALMA Scorecard',                         pages: 1,  role: 'all',     updated: '2026-09-15' },
 ];
 
 const FAQS: FAQ[] = [
@@ -122,7 +75,7 @@ const FAQS: FAQ[] = [
   { id: 'f2', cat: 'Teams',      q: 'Can I be on more than one team in a season?',
     a: "No. Each player belongs to one team per eight-week season. After the season closes, you're free to join a different captain's roster the next round." },
   { id: 'f3', cat: 'Scheduling', q: 'How many matches does my team play each week?',
-    a: 'Four. Each week you face one other team, and both sides split into pairs of two - so there are four tables running.' },
+    a: 'Three. Each week you face one other team, and both sides split into pairs of two - so there are three tables running.' },
   { id: 'f9', cat: 'Scoring',    q: 'How does scoring work?',
     a: "Every match is scored from 1 to 999 points. Your team's score for the week is the sum of all four match scores." },
   { id: 'f4', cat: 'Scoring',    q: 'A score was entered wrong - what now?',
@@ -157,22 +110,26 @@ function expandWeeklyAnswers(base: Record<string, Record<string, string>>, weeks
 }
 
 const SEASON: Season = {
+  id: 'local-season',
   name: 'Spring 2026',
   startDate: '2026-04-28',
   endDate: '2026-06-16',
   weekCount: 8,
-  currentWeek: 4,
+  currentWeek: 1,
   fee: 75,
   forfeitPoints: 75,
   weekWinBonus: 50,
+  shortHandedBonus: 15,
   proposeByWeeksOut: 2,
   acceptByWeeksOut: 1,
   playWindows: [
     { id: 'pw1', days: [2, 3], start: '09:00', end: '15:00' },
     { id: 'pw2', days: [6],    start: '10:00', end: '14:00' },
   ],
-  published: true,
-  awayRoster: { 5: ['u1','u13','u14','u15','u16','u17','u18','u19'] },
+  published: false,
+  scheduleFinalized: false,
+  awayRoster: {},
+  awayAlternates: {},
   slotAvailability: expandWeeklyAnswers({
     u1:  { 'pw1-2': 'yes', 'pw1-3': 'yes', 'pw2-6': 'yes' },
     u2:  { 'pw1-2': 'yes', 'pw1-3': 'no',  'pw2-6': 'yes' },
@@ -192,12 +149,10 @@ const SEASON: Season = {
 // Substitutes
 PEOPLE.majigan = { id: 'majigan', name: 'The Majigan', initials: 'MJ', tile: 'joker', sub: true,
   note: 'Guest player · not a league member', email: '', phone: '', skill: 'Guest', area: '' };
-PEOPLE.bob = { id: 'bob', name: 'Bob', initials: 'B', tile: 'blank', sub: true,
-  note: 'Empty seat · three at the table', email: '', phone: '', skill: '-', area: '' };
 
 // Admin account
-PEOPLE.admin1 = { id: 'admin1', name: 'Harper Vance', initials: 'HV', tile: 'flower', email: 'harper.vance@example.com', phone: '(404) 555-0914', skill: '-',
-  zip: '30305', area: 'Buckhead', tint: 'sky', title: 'League administrator' };
+PEOPLE.admin1 = { id: 'admin1', name: 'ALMA Admin', initials: 'AA', tile: 'flower', email: 'info@almamahj.com', phone: '', skill: '-',
+  zip: '', area: '', tint: 'sky', title: 'League administrator' };
 
 const ADMIN_USER   = 'admin1';
 const CAPTAIN_USER = 'u1';
@@ -219,8 +174,10 @@ TEAMS.forEach(team => {
     const id = `${team.id}-f${team.roster.length}`;
     const fn = firstNames[n % firstNames.length];
     const ln = lastNames[(n + team.roster.length) % lastNames.length];
+    const tiles = ['plum','orchid','mum','bamboo','red','green','flower','spring'];
     PEOPLE[id] = {
       id, name: `${fn} ${ln}`, initials: (fn[0] + ln[0]).toUpperCase(),
+      tile: tiles[n % tiles.length],
       email: `${fn.toLowerCase()}.${ln.toLowerCase()}@example.com`,
       phone: `(404) 555-${String(1000 + n).slice(-4)}`,
       skill: 'Experienced', zip: '30305', area: 'Buckhead', tint: tints[n % tints.length],
@@ -267,6 +224,6 @@ export function createInitialDB(): AlmaDB {
     ADMIN_USER,
     CAPTAIN_USER,
     PLAYER_USER,
-    SUBSTITUTES: ['majigan', 'bob'],
+    SUBSTITUTES: ['majigan'],
   };
 }

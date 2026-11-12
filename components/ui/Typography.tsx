@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TextStyle, StyleProp } from 'react-native';
-import { useTheme, ALMA_FONTS } from '../../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../../lib/theme';
 
 interface EyebrowProps {
   children: React.ReactNode;
@@ -13,7 +13,7 @@ export function Eyebrow({ children, color, style }: EyebrowProps) {
   return (
     <Text style={[{
       fontFamily: ALMA_FONTS.uiMedium,
-      fontSize: 10,
+      fontSize: fs(10),
       letterSpacing: T.eyebrowTracking,
       textTransform: 'uppercase',
       color: color || T.inkSoft,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ViewStyle, StyleProp } from 'react-native';
-import { useTheme, ALMA_FONTS } from '../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../lib/theme';
 
 interface SegmentedOption {
   value: string;
@@ -36,7 +36,7 @@ export function Segmented({ value, options, onChange, fullWidth, style }: Segmen
               ...(on ? T.shadowSm as ViewStyle : {}),
             }}>
             <Text style={{
-              fontFamily: ALMA_FONTS.uiMedium, fontSize: 12, letterSpacing: 0.4,
+              fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(12), letterSpacing: 0.4,
               color: on ? T.ink : T.inkSoft,
             }}>{o.label}</Text>
           </TouchableOpacity>

@@ -65,6 +65,11 @@ export const ALMA_FONTS = {
   uiBold: 'Jost_700Bold',
 } as const;
 
+// Global font scale — bump all font sizes by this factor for readability.
+// 1.0 = original, 1.15 = 15% larger
+export const FONT_SCALE = 1.15;
+export const fs = (size: number) => Math.round(size * FONT_SCALE * 10) / 10;
+
 export const SPACING = {
   xs: 4,
   sm: 8,

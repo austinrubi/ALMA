@@ -56,6 +56,7 @@ export function Icon({ name, size = 22, color = 'currentColor', strokeWidth = 1.
     settings: <G><Circle cx={12} cy={12} r={3} /></G>,
     qr: <G><Rect x={3} y={3} width={7} height={7} /><Rect x={14} y={3} width={7} height={7} /><Rect x={3} y={14} width={7} height={7} /><Path d="M14 14h2v2h-2z" /><Path d="M18 14h3" /><Path d="M14 18v3" /><Path d="M18 18h3v3" /></G>,
     sparkle: <G><Path d="M12 2v6" /><Path d="M12 16v6" /><Path d="M2 12h6" /><Path d="M16 12h6" /></G>,
+    swap: <G><Path d="M7 16l-4-4 4-4" /><Path d="M3 12h18" /><Path d="M17 8l4 4-4 4" /></G>,
   };
 
   return (

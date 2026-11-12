@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useTheme, ALMA_FONTS } from '../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../lib/theme';
 import type { AlmaDB } from '../types';
 
 interface WeekStripProps {
@@ -31,12 +31,12 @@ export function WeekStrip({ db, week, onChange }: WeekStripProps) {
             gap: 2,
           }}>
             <Text style={{
-              fontFamily: ALMA_FONTS.ui, fontSize: 9,
+              fontFamily: ALMA_FONTS.ui, fontSize: fs(9),
               letterSpacing: 2, color: on ? T.inkOnDeep : T.ink,
               opacity: 0.7,
             }}>WK</Text>
             <Text style={{
-              fontFamily: ALMA_FONTS.display, fontSize: 16,
+              fontFamily: ALMA_FONTS.display, fontSize: fs(16),
               color: on ? T.inkOnDeep : T.ink,
             }}>{w}</Text>
           </TouchableOpacity>
