@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Image, Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { useTheme, ALMA_FONTS } from '../../lib/theme';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useTheme, ALMA_FONTS , fs } from '../../lib/theme';
 import { useApp } from '../../lib/AppContext';
+import { supabase } from '../../lib/supabase';
 import { Field } from '../../components/Field';
 import { Card, Eyebrow, SerifTitle, Watercolor, Icon, Button } from '../../components/ui';
 
@@ -16,8 +17,9 @@ export default function SignInScreen() {
   const insets = useSafeAreaInsets();
   const { app } = useApp();
   const router = useRouter();
+  const params = useLocalSearchParams<{ mode?: string }>();
 
-  const [mode, setMode] = useState<Mode>('welcome');
+  const [mode, setMode] = useState<Mode>(params.mode === 'in' ? 'in' : 'welcome');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [reset, setReset] = useState('');
@@ -29,6 +31,22 @@ export default function SignInScreen() {
   const matches = pw1.length > 0 && pw1 === pw2;
   const canSave = longEnough && matches;
 
+  // Listen for the deep link from the password reset email
+  useEffect(() => {
+    const handleUrl = async (url: string) => {
+      if (url.includes('reset-password') || url.includes('type=recovery')) {
+        setMode('newpw');
+      }
+    };
+
+    // Check if app was opened via a link
+    Linking.getInitialURL().then(url => { if (url) handleUrl(url); });
+
+    // Listen for links while app is open
+    const sub = Linking.addEventListener('url', ({ url }) => handleUrl(url));
+    return () => sub.remove();
+  }, []);
+
   return (
     <View style={{ flex: 1, backgroundColor: T.appBg }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingTop: insets.top }} keyboardShouldPersistTaps="handled">
@@ -38,33 +56,33 @@ export default function SignInScreen() {
 
           {/* Badge */}
           <View style={{ alignItems: 'center', paddingTop: 24 }}>
-            <Image source={require('../../assets/images/alma-logo.png')} style={{ width: 280, height: 280 }} resizeMode="contain" />
+            <Image source={require('../../assets/images/alma-logo-transparent.png')} style={{ width: 280, height: 280 }} resizeMode="contain" />
           </View>
 
           {/* Welcome — 3 doors */}
           {mode === 'welcome' && (
-            <View style={{ marginTop: 16, gap: 16 }}>
-              <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 14, color: T.inkSoft, lineHeight: 22, textAlign: 'center' }}>
+            <View style={{ marginTop: 8, gap: 16 }}>
+              <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(16), color: T.inkSoft, lineHeight: 24, textAlign: 'center' }}>
                 ALMA is the premiere TEAM mahjong league. Teams compete for 8 weeks in a city-specific format (days, times, and number of matches may vary by city). Schedule and join matches that work with your calendar — our custom app keeps everything organized: team roster, availability, schedule, and leaderboard. All the team spirit of a tennis league, none of the racket required!
               </Text>
-              <Text style={{ fontFamily: ALMA_FONTS.displayBold, fontSize: 16, color: T.brand, textAlign: 'center', letterSpacing: 1.5 }}>
+              <Text style={{ fontFamily: ALMA_FONTS.displayBold, fontSize: fs(16), color: T.brand, textAlign: 'center', letterSpacing: 1.5 }}>
                 Team Up. Mahj On.
               </Text>
               <TouchableOpacity onPress={() => Linking.openURL('https://docs.google.com/document/d/1GmAf3LoNskA1KEicIQzDXpzRalvSOZq1rSDNSslb4Fg/edit?usp=sharing')} style={{ alignSelf: 'center' }}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 13, color: T.brand, textDecorationLine: 'underline' }}>
-                  Learn More
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(15), color: T.brand, textDecorationLine: 'underline' }}>
+                  Learn More - FAQ
                 </Text>
               </TouchableOpacity>
               <View style={{ gap: 9 }}>
+                <WelcomeDoor icon="profile" title="I'm already a member"
+                  body="Log in to your league account."
+                  onPress={() => setMode('in')} />
                 <WelcomeDoor primary icon="qr" title="I have a team code"
-                  body="Your captain texted you a code. Enter it, pay your season dues, and set up your account."
+                  body="You should have received a code from your captain — enter it below to join the roster."
                   onPress={() => router.push('/(auth)/sign-up')} />
                 <WelcomeDoor icon="edit" title="I'd like to play"
                   body="No code yet? Fill out the interest form and we'll be in touch about placement."
                   onPress={() => Linking.openURL(ALMA_INTEREST_FORM)} />
-                <WelcomeDoor icon="profile" title="I'm already a member"
-                  body="Log in to your league account."
-                  onPress={() => setMode('in')} />
               </View>
             </View>
           )}
@@ -78,7 +96,7 @@ export default function SignInScreen() {
               <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="you@example.com" />
               <Field label="Password" type="password" value={password} onChange={setPassword} />
               <TouchableOpacity onPress={() => setMode('forgot')} style={{ alignSelf: 'flex-end' }}>
-                <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 12, color: T.brand, borderBottomWidth: 1, borderBottomColor: T.brand }}>
+                <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(12), color: T.brand, borderBottomWidth: 1, borderBottomColor: T.brand }}>
                   Forgot your password?
                 </Text>
               </TouchableOpacity>
@@ -89,7 +107,7 @@ export default function SignInScreen() {
           {mode === 'forgot' && (
             <View style={{ marginTop: 34, gap: 14 }}>
               <View style={{ alignItems: 'center' }}><SerifTitle size={22} italic>Reset your password.</SerifTitle></View>
-              <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 14, color: T.inkSoft, lineHeight: 22, textAlign: 'center' }}>
+              <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(14), color: T.inkSoft, lineHeight: 22, textAlign: 'center' }}>
                 Enter the email on your league account and we'll send a reset link.
               </Text>
               <Field label="Email" type="email" value={reset} onChange={setReset} placeholder="you@example.com" />
@@ -106,7 +124,7 @@ export default function SignInScreen() {
                 <Icon name="mail" size={24} color={T.brand} />
               </View>
               <SerifTitle size={21} italic>Check your email.</SerifTitle>
-              <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 14, color: T.inkSoft, lineHeight: 22, textAlign: 'center' }}>
+              <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(14), color: T.inkSoft, lineHeight: 22, textAlign: 'center' }}>
                 A reset link is on its way to {reset || 'your inbox'}. It expires in an hour.
               </Text>
             </View>
@@ -116,7 +134,7 @@ export default function SignInScreen() {
           {mode === 'newpw' && (
             <View style={{ marginTop: 34, gap: 14 }}>
               <View style={{ alignItems: 'center' }}><SerifTitle size={22} italic>Choose a new password.</SerifTitle></View>
-              <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 14, color: T.inkSoft, lineHeight: 22, textAlign: 'center' }}>
+              <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(14), color: T.inkSoft, lineHeight: 22, textAlign: 'center' }}>
                 You're resetting the password for {reset || email || 'your league account'}.
               </Text>
               <Field label="New password" type="password" value={pw1} onChange={setPw1} />
@@ -138,7 +156,7 @@ export default function SignInScreen() {
                 <Icon name="check" size={24} color={T.brand} strokeWidth={1.7} />
               </View>
               <SerifTitle size={21} italic>Password updated.</SerifTitle>
-              <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 14, color: T.inkSoft, lineHeight: 22, textAlign: 'center' }}>
+              <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(14), color: T.inkSoft, lineHeight: 22, textAlign: 'center' }}>
                 You're signed out everywhere else. Log in with your new password.
               </Text>
             </View>
@@ -151,54 +169,70 @@ export default function SignInScreen() {
         <View style={{ paddingHorizontal: 24, paddingTop: 18, paddingBottom: insets.bottom + 26, gap: 8 }}>
           {mode === 'in' && (
             <>
-              {authError ? <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 12, color: '#A0524A', textAlign: 'center' }}>{authError}</Text> : null}
+              {authError ? <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(12), color: '#A0524A', textAlign: 'center' }}>{authError}</Text> : null}
               <Button variant="primary" fullWidth disabled={loading} onPress={async () => {
                 setLoading(true); setAuthError('');
-                const { error } = await app.signInWithEmail(email, password);
+                const result = await app.signInWithEmail(email, password);
                 setLoading(false);
-                if (error) setAuthError(error);
-                else router.replace('/(tabs)');
+                if (result.error) setAuthError(result.error);
+                else router.replace(result.role === 'admin' ? '/admin' : '/(tabs)');
               }}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.inkOnDeep }}>{loading ? 'Signing in\u2026' : 'Log in'}</Text>
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.inkOnDeep }}>{loading ? 'Signing in\u2026' : 'Log in'}</Text>
               </Button>
               <Button variant="ghost" fullWidth onPress={() => setMode('welcome')}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Back</Text>
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Back</Text>
               </Button>
             </>
           )}
           {mode === 'forgot' && (
             <>
-              <Button variant="primary" fullWidth onPress={() => setMode('sent')}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.inkOnDeep }}>Send reset link</Text>
+              {authError ? <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(12), color: '#A0524A', textAlign: 'center' }}>{authError}</Text> : null}
+              <Button variant="primary" fullWidth disabled={loading || !reset.trim()} onPress={async () => {
+                setLoading(true); setAuthError('');
+                const { error } = await supabase.auth.resetPasswordForEmail(reset.trim(), {
+                  redirectTo: 'alma://reset-password',
+                });
+                setLoading(false);
+                if (error) { setAuthError(error.message); return; }
+                setMode('sent');
+              }}>
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.inkOnDeep }}>{loading ? 'Sending\u2026' : 'Send reset link'}</Text>
               </Button>
               <Button variant="ghost" fullWidth onPress={() => setMode('in')}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Back to sign in</Text>
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Back to sign in</Text>
               </Button>
             </>
           )}
           {mode === 'sent' && (
             <>
               <Button variant="primary" fullWidth onPress={() => setMode('newpw')}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.inkOnDeep }}>Open the reset link</Text>
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.inkOnDeep }}>Open the reset link</Text>
               </Button>
               <Button variant="ghost" fullWidth onPress={() => setMode('in')}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Back to sign in</Text>
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Back to sign in</Text>
               </Button>
             </>
           )}
           {mode === 'newpw' && (
             <>
-              <Button variant="primary" fullWidth disabled={!canSave} onPress={() => setMode('changed')}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.inkOnDeep }}>Save new password</Text>
+              {authError ? <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(12), color: '#A0524A', textAlign: 'center' }}>{authError}</Text> : null}
+              <Button variant="primary" fullWidth disabled={!canSave || loading} onPress={async () => {
+                setLoading(true); setAuthError('');
+                const { error } = await supabase.auth.updateUser({ password: pw1 });
+                setLoading(false);
+                if (error) { setAuthError(error.message); return; }
+                setMode('changed');
+              }}>
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.inkOnDeep }}>{loading ? 'Saving\u2026' : 'Save new password'}</Text>
               </Button>
               <Button variant="ghost" fullWidth onPress={() => setMode('in')}>
-                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Cancel</Text>
+                <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Cancel</Text>
               </Button>
             </>
           )}
           {mode === 'changed' && (
             <Button variant="primary" fullWidth onPress={() => setMode('in')}>
-              <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.inkOnDeep }}>Log in</Text>
+              <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.inkOnDeep }}>Log in</Text>
             </Button>
           )}
         </View>
@@ -222,8 +256,8 @@ function WelcomeDoor({ icon, title, body, onPress, primary }: { icon: string; ti
         <Icon name={icon} size={17} color={primary ? '#EAF2EE' : T.brand} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 15.5, color: T.ink, lineHeight: 20 }}>{title}</Text>
-        <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 11.5, color: T.inkSoft, lineHeight: 17, marginTop: 4 }}>{body}</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(15.5), color: T.ink, lineHeight: 20 }}>{title}</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(11.5), color: T.inkSoft, lineHeight: 17, marginTop: 4 }}>{body}</Text>
       </View>
       <Icon name="chevronRight" size={16} color={T.inkMute} />
     </TouchableOpacity>
@@ -242,7 +276,7 @@ function PwRule({ ok, children }: { ok: boolean; children: React.ReactNode }) {
       }}>
         {ok && <Icon name="check" size={10} color="#EAF2EE" strokeWidth={2.4} />}
       </View>
-      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 11.5, color: ok ? T.ink : T.inkMute, letterSpacing: 0.3 }}>{children}</Text>
+      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(11.5), color: ok ? T.ink : T.inkMute, letterSpacing: 0.3 }}>{children}</Text>
     </View>
   );
 }

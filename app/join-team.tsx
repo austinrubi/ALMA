@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, ScrollView, Text, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useTheme, ALMA_FONTS } from '../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../lib/theme';
 import { useApp } from '../lib/AppContext';
 import { captainIdsOf } from '../lib/roles';
 import { Card, Eyebrow, SerifTitle, DisplayCaps, Watercolor, Button } from '../components/ui';
@@ -35,10 +35,6 @@ export default function JoinTeamScreen() {
     }
     const team = db.TEAMS.find(t => t.id === teamId);
     if (!team) { setError('Team not found.'); return; }
-    if (team.roster.length >= 12) {
-      setError(`${team.name} is full at twelve. Ask the admin for another team's code.`);
-      return;
-    }
     setError('');
     setJoined(team);
   };
@@ -65,12 +61,12 @@ export default function JoinTeamScreen() {
           </View>
           <View style={{ marginTop: 24 }}><Eyebrow>You're on the roster</Eyebrow></View>
           <View style={{ marginTop: 6 }}><DisplayCaps size={24}>{joined.name}</DisplayCaps></View>
-          <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 17, color: T.inkSoft, marginTop: 12, lineHeight: 25, textAlign: 'center' }}>
+          <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(17), color: T.inkSoft, marginTop: 12, lineHeight: 25, textAlign: 'center' }}>
             {caps.map(c => c.name).join(' & ')} {caps.length > 1 ? 'are your captains' : 'is your captain'}.{'\n'}You'll be seated at a table each week.
           </Text>
           <View style={{ marginTop: 32 }}>
             <Button variant="primary" size="lg" onPress={confirm}>
-              <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 15, color: T.inkOnDeep }}>Continue</Text>
+              <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(15), color: T.inkOnDeep }}>Continue</Text>
             </Button>
           </View>
         </View>
@@ -85,14 +81,14 @@ export default function JoinTeamScreen() {
         <View style={{ position: 'relative' }}>
           <Eyebrow>{`Player \u00B7 ${db.SEASON.name}`}</Eyebrow>
           <SerifTitle size={26} italic style={{ marginTop: 8 }}>Hello, {me?.name?.split(' ')[0]}.</SerifTitle>
-          <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 15, color: T.inkSoft, marginTop: 10, lineHeight: 23 }}>
+          <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(15), color: T.inkSoft, marginTop: 10, lineHeight: 23 }}>
             You haven't joined a team yet. If you already know the team that you would like to join, reach out to your captain for your team code.
           </Text>
         </View>
       </View>
 
       <View style={{ paddingHorizontal: 24, paddingTop: 22 }}>
-        <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: 13, letterSpacing: 3, textTransform: 'uppercase', color: T.ink }}>Team code</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.display, fontSize: fs(13), letterSpacing: 3, textTransform: 'uppercase', color: T.ink }}>Team code</Text>
         <View style={{
           marginTop: 12, flexDirection: 'row', alignItems: 'center', gap: 8,
           backgroundColor: T.surface, borderWidth: 1,
@@ -109,23 +105,23 @@ export default function JoinTeamScreen() {
             autoCapitalize="characters"
             spellCheck={false}
             style={{
-              flex: 1, fontFamily: ALMA_FONTS.display, fontSize: 22,
+              flex: 1, fontFamily: ALMA_FONTS.display, fontSize: fs(22),
               letterSpacing: 2, color: T.ink, paddingVertical: 10,
             }}
           />
           <Button variant="primary" size="sm" onPress={submit}>
-            <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 12, color: T.inkOnDeep }}>Join</Text>
+            <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(12), color: T.inkOnDeep }}>Join</Text>
           </Button>
         </View>
-        {error ? <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 11, marginTop: 8, lineHeight: 17, color: T.accent }}>{error}</Text> : null}
-        <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 11, color: T.inkMute, lineHeight: 18, marginTop: 14 }}>
+        {error ? <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(11), marginTop: 8, lineHeight: 17, color: T.accent }}>{error}</Text> : null}
+        <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(11), color: T.inkMute, lineHeight: 18, marginTop: 14 }}>
           No code? Email <Text style={{ color: T.brand }}>hello@almaleague.org</Text> and we'll match you to a captain with an open seat.
         </Text>
       </View>
 
       <View style={{ paddingHorizontal: 24, paddingTop: 20 }}>
         <Button variant="ghost" fullWidth onPress={() => router.back()}>
-          <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Back</Text>
+          <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Back</Text>
         </Button>
       </View>
     </ScrollView>

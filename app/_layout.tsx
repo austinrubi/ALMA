@@ -9,21 +9,27 @@ import { ThemeContext, PARLOR_THEME } from '../lib/theme';
 import { AppProvider, useApp } from '../lib/AppContext';
 
 function AuthGate({ children }: { children: React.ReactNode }) {
-  const { session, isLoading, authScreen } = useApp();
+  const { session, isLoading, authScreen, role, signingUp, duesPaid } = useApp();
   const router = useRouter();
   const segments = useSegments();
 
   React.useEffect(() => {
     if (isLoading) return;
+    if (signingUp) return;
 
     const inAuthGroup = segments[0] === '(auth)';
+    const onPaymentRequired = segments[0] === 'payment-required';
 
     if (!session && !inAuthGroup) {
       router.replace('/(auth)/sign-in');
-    } else if (session && inAuthGroup) {
-      router.replace('/(tabs)');
+    } else if (session && role !== 'admin' && !duesPaid && !onPaymentRequired && !inAuthGroup) {
+      // Unpaid user — redirect to payment screen
+      router.replace('/payment-required');
+    } else if (session && (duesPaid || role === 'admin') && (inAuthGroup || onPaymentRequired)) {
+      // Paid user on auth/payment screen — redirect to app
+      router.replace(role === 'admin' ? '/admin' : '/(tabs)');
     }
-  }, [session, isLoading, segments]);
+  }, [session, isLoading, segments, role, signingUp, duesPaid]);
 
   if (isLoading) {
     return (
@@ -81,6 +87,7 @@ export default function RootLayout() {
             <Stack.Screen name="season-over" />
             <Stack.Screen name="champion" />
             <Stack.Screen name="admin" />
+            <Stack.Screen name="payment-required" options={{ headerShown: false }} />
           </Stack>
         </AuthGate>
       </AppProvider>
