@@ -70,6 +70,29 @@ export function toMin(hhmm: string): number {
   return h * 60 + (m || 0);
 }
 
+/** Get the actual calendar dates for play-window days in a given week. */
+export function weekPlayDates(db: AlmaDB, week: number): Date[] {
+  const startDate = db.SEASON?.startDate;
+  if (!startDate) return [];
+  const seasonStart = new Date(startDate + 'T00:00:00');
+  const weekStart = new Date(seasonStart.getTime() + (week - 1) * 7 * 86400000);
+  const windows = playWindowsOf(db);
+  const playDays = new Set(windows.flatMap(w => w.days));
+  const dates: Date[] = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(weekStart.getTime() + i * 86400000);
+    if (playDays.has(d.getDay())) dates.push(d);
+  }
+  return dates;
+}
+
+/** Format week play dates as short string like "1/26 & 1/29" */
+export function weekPlayDatesLabel(db: AlmaDB, week: number): string {
+  const dates = weekPlayDates(db, week);
+  if (!dates.length) return '';
+  return dates.map(d => `${d.getMonth() + 1}/${d.getDate()}`).join(' & ');
+}
+
 export function describeWindow(w: PlayWindow): string {
   const days = w.days.slice().sort((a, b) => a - b).map(d => DOW_LONG[d] + 's');
   if (!days.length) return 'No days chosen';

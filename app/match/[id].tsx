@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView, Text, Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useTheme, ALMA_FONTS } from '../../lib/theme';
+import { useTheme, ALMA_FONTS , fs } from '../../lib/theme';
 import { useApp } from '../../lib/AppContext';
 import { isCaptainOf, captainIdsOf } from '../../lib/roles';
 import { slotAvailabilityOf, weeklySlots, weekSlotId, slotLabel, fmtTime12 } from '../../lib/availability';
@@ -46,9 +46,9 @@ export default function MatchDetailScreen() {
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', position: 'relative', paddingTop: 8 }}>
           <Button variant="ghost" size="sm" onPress={() => router.back()}>
             <Icon name="chevronLeft" size={18} color={T.inkOnDeep} />
-            <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 13, color: T.inkOnDeep }}>Schedule</Text>
+            <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(13), color: T.inkOnDeep }}>Schedule</Text>
           </Button>
-          {final && <Chip variant="success"><Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 10, letterSpacing: 1.6, color: '#466357' }}>Scored</Text></Chip>}
+          {final && <Chip variant="success"><Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(10), letterSpacing: 1.6, color: '#466357' }}>Scored</Text></Chip>}
         </View>
 
         <View style={{ marginTop: 18, position: 'relative' }}>
@@ -57,7 +57,7 @@ export default function MatchDetailScreen() {
 
         <View style={{ marginTop: 14, position: 'relative', gap: 4 }}>
           <DisplayCaps size={30} color={T.inkOnDeep}>{home.shortName}</DisplayCaps>
-          <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 18, color: 'rgba(239,234,217,0.7)', paddingVertical: 2 }}>vs.</Text>
+          <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(18), color: 'rgba(239,234,217,0.7)', paddingVertical: 2 }}>vs.</Text>
           <DisplayCaps size={30} color={T.inkOnDeep}>{away.shortName}</DisplayCaps>
         </View>
 
@@ -66,12 +66,23 @@ export default function MatchDetailScreen() {
           <PlanLine icon="star" color={T.inkOnDeep}>
             {home.shortName} is the home team — they set the time and place, and log the score
           </PlanLine>
-          <PlanLine icon="clock" color={T.inkOnDeep}>
-            {match.plan?.when || 'Contact your opponents to schedule time.'}
-          </PlanLine>
-          <PlanLine icon="pin" color={match.plan?.where ? T.inkOnDeep : 'rgba(239,234,217,0.7)'}>
-            {match.plan?.where || 'Contact your opponents to schedule place.'}
-          </PlanLine>
+          {match.plan?.when ? (
+            <>
+              <PlanLine icon="clock" color={T.inkOnDeep}>{match.plan.when}</PlanLine>
+              <PlanLine icon="pin" color={match.plan?.where ? T.inkOnDeep : 'rgba(239,234,217,0.7)'}>
+                {match.plan?.where || 'Location not yet set'}
+              </PlanLine>
+            </>
+          ) : myTeamIsHome ? (
+            <>
+              <PlanLine icon="clock" color={'rgba(239,234,217,0.7)'}>Time not yet set</PlanLine>
+              <PlanLine icon="pin" color={'rgba(239,234,217,0.7)'}>Location not yet set</PlanLine>
+            </>
+          ) : (
+            <PlanLine icon="clock" color={'rgba(239,234,217,0.7)'}>
+              Waiting for {home.shortName} to propose a date and time
+            </PlanLine>
+          )}
         </View>
       </View>
 
@@ -97,8 +108,8 @@ export default function MatchDetailScreen() {
                   <View style={{ padding: 13, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                     <Avatar initials={p.initials} tile={p.tile} size={38} tint={p.tint} />
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: 15.5, color: T.ink }}>{p.name}</Text>
-                      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 10.5, letterSpacing: 1, textTransform: 'uppercase', color: T.inkSoft, marginTop: 2 }}>
+                      <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: fs(15.5), color: T.ink }}>{p.name}</Text>
+                      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(10.5), letterSpacing: 1, textTransform: 'uppercase', color: T.inkSoft, marginTop: 2 }}>
                         {opp.shortName}{isCaptainOf(opp, uid) ? ' · Captain' : ''}
                       </Text>
                     </View>
@@ -111,7 +122,7 @@ export default function MatchDetailScreen() {
           </View>
         ) : (
           <Card variant="quiet" style={{ marginTop: 12, padding: 16 }}>
-            <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 14, color: T.inkSoft, lineHeight: 21 }}>
+            <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(14), color: T.inkSoft, lineHeight: 21 }}>
               {opp.shortName} hasn't set this pairing yet. Contacts appear the moment their captain seats the table.
             </Text>
           </Card>
@@ -124,7 +135,7 @@ export default function MatchDetailScreen() {
         <Card style={{ marginTop: 12, padding: 18 }}>
           {!final && (
             <View>
-              <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 15, color: T.inkSoft, lineHeight: 22 }}>
+              <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(15), color: T.inkSoft, lineHeight: 22 }}>
                 {canLog
                   ? `Once you've played, log both scores (1\u2013999). They lock the moment you submit \u2014 only ${hostCaptainNames} can change them after that.`
                   : `The ${home.shortName} pair logs this table's score after play. It locks on submission.`}
@@ -132,7 +143,7 @@ export default function MatchDetailScreen() {
               {canLog && (
                 <View style={{ marginTop: 14 }}>
                   <Button variant="primary" fullWidth onPress={() => router.push({ pathname: '/score/[id]', params: { id: match.id } })}>
-                    <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.inkOnDeep }}>Log the score</Text>
+                    <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.inkOnDeep }}>Log the score</Text>
                   </Button>
                 </View>
               )}
@@ -142,11 +153,11 @@ export default function MatchDetailScreen() {
             <View>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 18 }}>
                 <ScoreCol team={myTeam.shortName} score={myScore!} label="You" />
-                <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 22, color: T.inkSoft }}>–</Text>
+                <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(22), color: T.inkSoft }}>–</Text>
                 <ScoreCol team={opp.shortName} score={oppScore!} />
               </View>
               <View style={{ marginTop: 16, paddingTop: 14, borderTopWidth: 1, borderTopColor: T.border }}>
-                <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: 13.5, color: T.inkSoft, lineHeight: 20 }}>
+                <Text style={{ fontFamily: ALMA_FONTS.serif, fontSize: fs(13.5), color: T.inkSoft, lineHeight: 20 }}>
                   Reach out to your team captain(s) if you believe a scoring mistake has been made.
                 </Text>
               </View>
@@ -154,7 +165,7 @@ export default function MatchDetailScreen() {
                 <View style={{ marginTop: 14 }}>
                   <Button variant="secondary" fullWidth onPress={() => router.push({ pathname: '/score/[id]', params: { id: match.id, mode: 'edit' } })}>
                     <Icon name="edit" size={15} color={T.ink} />
-                    <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 14, color: T.ink }}>Override score</Text>
+                    <Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(14), color: T.ink }}>Override score</Text>
                   </Button>
                 </View>
               )}
@@ -170,7 +181,7 @@ function PlanLine({ icon, color, children }: { icon: string; color: string; chil
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, opacity: 0.85 }}>
       <Icon name={icon} size={14} color={color} />
-      <Text style={{ fontFamily: 'Jost_400Regular', fontSize: 13, color, flex: 1 }}>{children}</Text>
+      <Text style={{ fontFamily: 'Jost_400Regular', fontSize: fs(13), color, flex: 1 }}>{children}</Text>
     </View>
   );
 }
@@ -179,7 +190,7 @@ function PairBlock({ db, team, uids, label, mine }: { db: any; team: any; uids: 
   const T = useTheme();
   return (
     <Card variant={mine ? 'default' : 'quiet'} style={{ padding: 14 }}>
-      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 9.5, letterSpacing: 2, textTransform: 'uppercase', color: T.inkSoft }}>{label}</Text>
+      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(9.5), letterSpacing: 2, textTransform: 'uppercase', color: T.inkSoft }}>{label}</Text>
       {uids.length ? (
         <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
           {uids.map(uid => {
@@ -191,16 +202,16 @@ function PairBlock({ db, team, uids, label, mine }: { db: any; team: any; uids: 
                 borderRadius: 14, padding: 12, alignItems: 'center', gap: 6,
               }}>
                 <Avatar initials={p.initials} tile={p.tile} size={40} tint={p.tint} />
-                <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: 13, color: T.ink, textAlign: 'center', lineHeight: 16 }}>
+                <Text style={{ fontFamily: ALMA_FONTS.serifSemiBold, fontSize: fs(13), color: T.ink, textAlign: 'center', lineHeight: 16 }}>
                   {p.name.split(' ')[0]}{'\n'}{p.name.split(' ').slice(1).join(' ')}
                 </Text>
-                {isCaptainOf(team, uid) && <Chip variant="default"><Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: 8, letterSpacing: 1.2, color: T.ink }}>Captain</Text></Chip>}
+                {isCaptainOf(team, uid) && <Chip variant="default"><Text style={{ fontFamily: ALMA_FONTS.uiMedium, fontSize: fs(8), letterSpacing: 1.2, color: T.ink }}>Captain</Text></Chip>}
               </View>
             );
           })}
         </View>
       ) : (
-        <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: 14, color: T.inkSoft, marginTop: 8 }}>Not seated yet.</Text>
+        <Text style={{ fontFamily: ALMA_FONTS.serifItalic, fontSize: fs(14), color: T.inkSoft, marginTop: 8 }}>Not seated yet.</Text>
       )}
     </Card>
   );
@@ -210,7 +221,7 @@ function ScoreCol({ team, score, label }: { team: string; score: number; label?:
   const T = useTheme();
   return (
     <View style={{ alignItems: 'center' }}>
-      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: 9, letterSpacing: 1.6, textTransform: 'uppercase', color: T.inkSoft, marginBottom: 4 }}>
+      <Text style={{ fontFamily: ALMA_FONTS.ui, fontSize: fs(9), letterSpacing: 1.6, textTransform: 'uppercase', color: T.inkSoft, marginBottom: 4 }}>
         {team}{label ? ` \u00B7 ${label}` : ''}
       </Text>
       <DisplayCaps size={44} color={T.ink}>{score}</DisplayCaps>
