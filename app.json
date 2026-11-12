@@ -9,7 +9,10 @@
     "scheme": "alma",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "org.almaleague.app"
+      "bundleIdentifier": "org.almaleague.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +29,17 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-status-bar"
-    ]
+      "expo-status-bar",
+      "expo-asset",
+      "expo-sharing",
+      "expo-notifications"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "cbe1c52d-699d-46af-9e5c-a02c4acd630b"
+      }
+    },
+    "owner": "austinrubinger"
   }
 }

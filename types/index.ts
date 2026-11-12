@@ -65,6 +65,7 @@ export interface Match {
   editedBy?: string;
   editedAt?: string;
   forfeitBy?: string;
+  shortHanded?: string;
 }
 
 export interface PlayWindow {
@@ -75,6 +76,7 @@ export interface PlayWindow {
 }
 
 export interface Season {
+  id?: string;
   name: string;
   startDate: string;
   endDate: string;
@@ -83,11 +85,14 @@ export interface Season {
   fee: number;
   forfeitPoints: number;
   weekWinBonus: number;
+  shortHandedBonus: number;
   proposeByWeeksOut: number;
   acceptByWeeksOut: number;
   playWindows: PlayWindow[];
   published: boolean;
+  scheduleFinalized: boolean;
   awayRoster: Record<number, string[]>;
+  awayAlternates: Record<number, string[]>;
   slotAvailability: Record<string, Record<string, string>>;
 }
 
@@ -149,6 +154,7 @@ export interface AlmaDB {
   PLAYER_USER: string;
   SUBSTITUTES: string[];
   ROLE?: string;
+  DUES_PAID?: boolean;
 }
 
 export interface Viewer {

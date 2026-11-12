@@ -191,6 +191,17 @@ export async function upsertSlotAvailability(userId: string, seasonId: string, w
   }
 }
 
+export async function upsertSlotNote(userId: string, seasonId: string, week: number, slotId: string, note: string) {
+  const { error } = await supabase
+    .from('slot_availability')
+    .update({ note: note || null })
+    .eq('user_id', userId)
+    .eq('season_id', seasonId)
+    .eq('week', week)
+    .eq('slot_id', slotId);
+  if (error) throw error;
+}
+
 export async function joinTeam(teamId: string, userId: string) {
   // Remove from any existing team first
   await supabase.from('team_members').delete().eq('user_id', userId);
@@ -199,4 +210,146 @@ export async function joinTeam(teamId: string, userId: string) {
     .from('team_members')
     .insert({ team_id: teamId, user_id: userId, team_role: 'player' });
   if (error) throw error;
+}
+
+export async function updateTeamMemberRole(teamId: string, userId: string, teamRole: 'captain' | 'player') {
+  const { error } = await supabase
+    .from('team_members')
+    .update({ team_role: teamRole })
+    .eq('team_id', teamId)
+    .eq('user_id', userId);
+  if (error) throw error;
+}
+
+export async function removeTeamMember(teamId: string, userId: string) {
+  const { error } = await supabase
+    .from('team_members')
+    .delete()
+    .eq('team_id', teamId)
+    .eq('user_id', userId);
+  if (error) throw error;
+}
+
+// ── Team creation ────────────────────────────────────────────────────────────
+
+export async function createTeam(seasonId: string, name: string, shortName: string, homeVenue: string, code: string) {
+  const { data, error } = await supabase
+    .from('teams')
+    .insert({
+      season_id: seasonId,
+      name,
+      short_name: shortName,
+      home_venue: homeVenue,
+      code,
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+// ── Away Rosters ─────────────────────────────────────────────────────────────
+
+export async function fetchAwayRosters(seasonId: string) {
+  const { data, error } = await supabase
+    .from('away_rosters')
+    .select('*')
+    .eq('season_id', seasonId);
+  if (error) throw error;
+  return data;
+}
+
+export async function upsertAwayRoster(teamId: string, seasonId: string, week: number, userIds: string[]) {
+  const { error } = await supabase
+    .from('away_rosters')
+    .upsert({ team_id: teamId, season_id: seasonId, week, user_ids: userIds }, { onConflict: 'team_id,season_id,week' });
+  if (error) throw error;
+}
+
+export async function upsertAwayAlternates(teamId: string, seasonId: string, week: number, alternateIds: string[]) {
+  const { error } = await supabase
+    .from('away_rosters')
+    .upsert({ team_id: teamId, season_id: seasonId, week, alternate_ids: alternateIds }, { onConflict: 'team_id,season_id,week' });
+  if (error) throw error;
+}
+
+export async function updateSeason(seasonId: string, patch: Record<string, any>) {
+  const { error } = await supabase
+    .from('seasons')
+    .update(patch)
+    .eq('id', seasonId);
+  if (error) throw error;
+}
+
+export async function upsertPlayWindows(seasonId: string, windows: { id: string; days: number[]; start: string; end: string }[]) {
+  // Delete existing windows for this season, then insert new ones
+  await supabase.from('play_windows').delete().eq('season_id', seasonId);
+  if (windows.length) {
+    const rows = windows.map(w => ({
+      season_id: seasonId,
+      days: w.days,
+      start_time: w.start,
+      end_time: w.end,
+    }));
+    const { error } = await supabase.from('play_windows').insert(rows);
+    if (error) throw error;
+  }
+}
+
+// ── Schedule finalization ────────────────────────────────────────────────────
+
+export async function insertMatches(seasonId: string, matches: { week: number; table: number; homeTeamId: string; awayTeamId: string }[]) {
+  const rows = matches.map(m => ({
+    season_id: seasonId,
+    week: m.week,
+    table_num: m.table,
+    home_team_id: m.homeTeamId,
+    away_team_id: m.awayTeamId,
+    match_type: 'tournament',
+    status: 'open',
+  }));
+  const { data, error } = await supabase
+    .from('matches')
+    .insert(rows)
+    .select('id, week, table_num, home_team_id, away_team_id');
+  if (error) throw error;
+  return data;
+}
+
+export async function upsertMatchResultWithShortHanded(
+  matchId: string, homeScore: number, awayScore: number,
+  enteredBy: string, shortHandedSide: string
+) {
+  const { error } = await supabase
+    .from('match_results')
+    .update({
+      home_score: homeScore,
+      away_score: awayScore,
+      short_handed: shortHandedSide,
+    })
+    .eq('match_id', matchId);
+  if (error) throw error;
+}
+
+export async function upsertMatchResultWithEdit(
+  matchId: string, homeScore: number, awayScore: number,
+  editedBy: string, forfeitSide?: string
+) {
+  const { error } = await supabase
+    .from('match_results')
+    .upsert({
+      match_id: matchId,
+      home_score: homeScore,
+      away_score: awayScore,
+      edited_by: editedBy,
+      edited_at: new Date().toISOString(),
+      forfeit_side: forfeitSide || null,
+    }, { onConflict: 'match_id' });
+  if (error) throw error;
+
+  const { error: matchError } = await supabase
+    .from('matches')
+    .update({ status: 'final' })
+    .eq('id', matchId);
+  if (matchError) throw matchError;
 }

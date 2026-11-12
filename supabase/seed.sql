@@ -36,7 +36,7 @@ values
   ('d0000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'josephine.karr@example.com',      '$2a$10$PznXkMALjMOEVSRGsSOyZ.RIR7SjNFpzHYv3W1JMvEMXx2mHOqSXy', now(), now(), now(), '', '{"name":"Josephine Karr"}'::jsonb),
   ('d0000000-0000-0000-0000-000000000022', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'delphine.forrest@example.com',    '$2a$10$PznXkMALjMOEVSRGsSOyZ.RIR7SjNFpzHYv3W1JMvEMXx2mHOqSXy', now(), now(), now(), '', '{"name":"Delphine Forrest"}'::jsonb),
   -- Admin user
-  ('d0000000-0000-0000-0000-000000000099', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'harper.vance@example.com',        '$2a$10$PznXkMALjMOEVSRGsSOyZ.RIR7SjNFpzHYv3W1JMvEMXx2mHOqSXy', now(), now(), now(), '', '{"name":"Harper Vance"}'::jsonb),
+  ('d0000000-0000-0000-0000-000000000099', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'info@almamahj.com',               '$2a$10$PznXkMALjMOEVSRGsSOyZ.RIR7SjNFpzHYv3W1JMvEMXx2mHOqSXy', now(), now(), now(), '', '{"name":"ALMA Admin"}'::jsonb),
   -- Filler roster users (t1-f5 through t8-f7) — 32 users to fill rosters to 8 each
   ('d0000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'genevieve.ashford@example.com',    '$2a$10$PznXkMALjMOEVSRGsSOyZ.RIR7SjNFpzHYv3W1JMvEMXx2mHOqSXy', now(), now(), now(), '', '{"name":"Genevieve Ashford"}'::jsonb),
   ('d0000000-0000-0000-0000-000000000102', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'cecilia.berkeley@example.com',     '$2a$10$PznXkMALjMOEVSRGsSOyZ.RIR7SjNFpzHYv3W1JMvEMXx2mHOqSXy', now(), now(), now(), '', '{"name":"Cecilia Berkeley"}'::jsonb),
@@ -106,7 +106,7 @@ update public.profiles set phone = '(404) 555-0803', tile = 'bamboo', tint = 'bo
 update public.profiles set phone = '(404) 555-0840', tile = 'red',    tint = 'sky',   skill = 'Experienced', zip = '30319', area = 'Brookhaven',     role = 'player'  where id = 'd0000000-0000-0000-0000-000000000021';
 update public.profiles set phone = '(404) 555-0877', tile = 'green',  tint = 'sage',  skill = 'Experienced', zip = '30319', area = 'Brookhaven',     role = 'player'  where id = 'd0000000-0000-0000-0000-000000000022';
 -- Admin
-update public.profiles set phone = '(404) 555-0914', tile = 'flower', tint = 'sky',   skill = '-',           zip = '30305', area = 'Buckhead',       role = 'admin'   where id = 'd0000000-0000-0000-0000-000000000099';
+update public.profiles set phone = '',                tile = 'flower', tint = 'sky',   skill = '-',           zip = '',      area = '',               role = 'admin'   where id = 'd0000000-0000-0000-0000-000000000099';
 
 -- Filler roster users — all players
 update public.profiles set tile = 'plum',   tint = 'bone',  skill = 'Experienced', zip = '30305', area = 'Buckhead', role = 'player' where id like 'd0000000-0000-0000-0000-0000000001__';
@@ -114,8 +114,8 @@ update public.profiles set tile = 'plum',   tint = 'bone',  skill = 'Experienced
 -- ============================================================
 -- Season
 -- ============================================================
-insert into public.seasons (id, name, start_date, end_date, week_count, current_week, fee, forfeit_points, week_win_bonus, published)
-values ('a0000000-0000-0000-0000-000000000001', 'Spring 2026', '2026-04-28', '2026-06-16', 8, 4, 75, 75, 50, true);
+insert into public.seasons (id, name, start_date, end_date, week_count, current_week, fee, forfeit_points, week_win_bonus, short_handed_bonus, published)
+values ('a0000000-0000-0000-0000-000000000001', 'Spring 2026', '2026-04-28', '2026-06-16', 8, 4, 75, 75, 50, 15, true);
 
 -- Play windows
 insert into public.play_windows (id, season_id, days, start_time, end_time) values
@@ -219,33 +219,29 @@ insert into public.team_members (team_id, user_id, team_role) values
 -- ============================================================
 -- Matches
 -- ============================================================
--- Week 4: Sparrows (t1) host Bamboos (t2) — 4 tables
+-- Week 4: Sparrows (t1) host Bamboos (t2) — 3 tables
 insert into public.matches (id, season_id, week, table_num, match_type, home_team_id, away_team_id, status) values
   ('e0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 4, 1, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000002', 'final'),
   ('e0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 4, 2, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000002', 'final'),
-  ('e0000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 4, 3, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000002', 'open'),
-  ('e0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 4, 4, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000002', 'open');
+  ('e0000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 4, 3, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000002', 'open');
 
--- Week 3: Sparrows (t1) host Magnolias (t3)
+-- Week 3: Sparrows (t1) host Magnolias (t3) — 3 tables
 insert into public.matches (id, season_id, week, table_num, match_type, home_team_id, away_team_id, status) values
   ('e0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 3, 1, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000003', 'final'),
   ('e0000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 3, 2, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000003', 'final'),
-  ('e0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 3, 3, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000003', 'final'),
-  ('e0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 3, 4, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000003', 'final');
+  ('e0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 3, 3, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000003', 'final');
 
--- Week 5: Dragons (t4) host Sparrows (t1)
+-- Week 5: Dragons (t4) host Sparrows (t1) — 3 tables
 insert into public.matches (id, season_id, week, table_num, match_type, home_team_id, away_team_id, status) values
   ('e0000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 5, 1, 'tournament', 'c0000000-0000-0000-0000-000000000004', 'c0000000-0000-0000-0000-000000000001', 'open'),
   ('e0000000-0000-0000-0000-000000000010', 'a0000000-0000-0000-0000-000000000001', 5, 2, 'tournament', 'c0000000-0000-0000-0000-000000000004', 'c0000000-0000-0000-0000-000000000001', 'open'),
-  ('e0000000-0000-0000-0000-000000000011', 'a0000000-0000-0000-0000-000000000001', 5, 3, 'tournament', 'c0000000-0000-0000-0000-000000000004', 'c0000000-0000-0000-0000-000000000001', 'open'),
-  ('e0000000-0000-0000-0000-000000000012', 'a0000000-0000-0000-0000-000000000001', 5, 4, 'tournament', 'c0000000-0000-0000-0000-000000000004', 'c0000000-0000-0000-0000-000000000001', 'open');
+  ('e0000000-0000-0000-0000-000000000011', 'a0000000-0000-0000-0000-000000000001', 5, 3, 'tournament', 'c0000000-0000-0000-0000-000000000004', 'c0000000-0000-0000-0000-000000000001', 'open');
 
--- Week 1: Sparrows (t1) host Cranes (t5)
+-- Week 1: Sparrows (t1) host Cranes (t5) — 3 tables
 insert into public.matches (id, season_id, week, table_num, match_type, home_team_id, away_team_id, status) values
   ('e0000000-0000-0000-0000-000000000013', 'a0000000-0000-0000-0000-000000000001', 1, 1, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000005', 'final'),
   ('e0000000-0000-0000-0000-000000000014', 'a0000000-0000-0000-0000-000000000001', 1, 2, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000005', 'final'),
-  ('e0000000-0000-0000-0000-000000000015', 'a0000000-0000-0000-0000-000000000001', 1, 3, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000005', 'final'),
-  ('e0000000-0000-0000-0000-000000000016', 'a0000000-0000-0000-0000-000000000001', 1, 4, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000005', 'final');
+  ('e0000000-0000-0000-0000-000000000015', 'a0000000-0000-0000-0000-000000000001', 1, 3, 'tournament', 'c0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000005', 'final');
 
 -- ============================================================
 -- Match Seats
@@ -266,10 +262,6 @@ insert into public.match_seats (match_id, side, seat_index, user_id) values
 insert into public.match_seats (match_id, side, seat_index, user_id) values
   ('e0000000-0000-0000-0000-000000000003', 'home', 0, 'd0000000-0000-0000-0000-000000000016'),
   ('e0000000-0000-0000-0000-000000000003', 'home', 1, 'd0000000-0000-0000-0000-000000000017');
--- Week 4 table 4 (home only)
-insert into public.match_seats (match_id, side, seat_index, user_id) values
-  ('e0000000-0000-0000-0000-000000000004', 'home', 0, 'd0000000-0000-0000-0000-000000000018'),
-  ('e0000000-0000-0000-0000-000000000004', 'home', 1, 'd0000000-0000-0000-0000-000000000019');
 
 -- Week 3 table 1
 insert into public.match_seats (match_id, side, seat_index, user_id) values
@@ -284,10 +276,6 @@ insert into public.match_seats (match_id, side, seat_index, user_id) values
 insert into public.match_seats (match_id, side, seat_index, user_id) values
   ('e0000000-0000-0000-0000-000000000007', 'home', 0, 'd0000000-0000-0000-0000-000000000014'),
   ('e0000000-0000-0000-0000-000000000007', 'home', 1, 'd0000000-0000-0000-0000-000000000016');
--- Week 3 table 4
-insert into public.match_seats (match_id, side, seat_index, user_id) values
-  ('e0000000-0000-0000-0000-000000000008', 'home', 0, 'd0000000-0000-0000-0000-000000000018'),
-  ('e0000000-0000-0000-0000-000000000008', 'home', 1, 'd0000000-0000-0000-0000-000000000019');
 
 -- Week 5 table 1 (one home seat)
 insert into public.match_seats (match_id, side, seat_index, user_id) values
@@ -301,9 +289,7 @@ insert into public.match_seats (match_id, side, seat_index, user_id) values
   ('e0000000-0000-0000-0000-000000000014', 'home', 0, 'd0000000-0000-0000-0000-000000000013'),
   ('e0000000-0000-0000-0000-000000000014', 'home', 1, 'd0000000-0000-0000-0000-000000000014'),
   ('e0000000-0000-0000-0000-000000000015', 'home', 0, 'd0000000-0000-0000-0000-000000000016'),
-  ('e0000000-0000-0000-0000-000000000015', 'home', 1, 'd0000000-0000-0000-0000-000000000018'),
-  ('e0000000-0000-0000-0000-000000000016', 'home', 0, 'd0000000-0000-0000-0000-000000000017'),
-  ('e0000000-0000-0000-0000-000000000016', 'home', 1, 'd0000000-0000-0000-0000-000000000019');
+  ('e0000000-0000-0000-0000-000000000015', 'home', 1, 'd0000000-0000-0000-0000-000000000018');
 
 -- ============================================================
 -- Match Results
@@ -314,11 +300,9 @@ insert into public.match_results (match_id, home_score, away_score, entered_by, 
   ('e0000000-0000-0000-0000-000000000005', 512, 476, 'd0000000-0000-0000-0000-000000000017', '2026-05-12 22:14:00+00'),
   ('e0000000-0000-0000-0000-000000000006', 588, 401, 'd0000000-0000-0000-0000-000000000013', '2026-05-10 18:02:00+00'),
   ('e0000000-0000-0000-0000-000000000007', 437, 610, 'd0000000-0000-0000-0000-000000000016', '2026-05-08 20:31:00+00'),
-  ('e0000000-0000-0000-0000-000000000008', 503, 472, 'd0000000-0000-0000-0000-000000000019', '2026-05-08 21:15:00+00'),
   ('e0000000-0000-0000-0000-000000000013', 521, 468, 'd0000000-0000-0000-0000-000000000015', '2026-04-29 21:10:00+00'),
   ('e0000000-0000-0000-0000-000000000014', 486, 533, 'd0000000-0000-0000-0000-000000000013', '2026-04-30 20:25:00+00'),
-  ('e0000000-0000-0000-0000-000000000015', 574, 442, 'd0000000-0000-0000-0000-000000000016', '2026-05-01 19:48:00+00'),
-  ('e0000000-0000-0000-0000-000000000016', 455, 507, 'd0000000-0000-0000-0000-000000000019', '2026-05-02 22:02:00+00');
+  ('e0000000-0000-0000-0000-000000000015', 574, 442, 'd0000000-0000-0000-0000-000000000016', '2026-05-01 19:48:00+00');
 
 -- Week 3 table 3 was edited
 update public.match_results set edited_by = 'd0000000-0000-0000-0000-000000000001', edited_at = '2026-05-09 09:12:00+00'
@@ -349,7 +333,7 @@ insert into public.faqs (category, question, answer, sort_order) values
   ('Account',    'How do I reset my password?', 'From the sign-in screen, tap "Forgot password" and we''ll send a link to your registered email.', 1),
   ('Teams',      'Can I be on more than one team in a season?', 'No. Each player belongs to one team per eight-week season.', 2),
   ('Teams',      'Can a team have two captains?', 'Yes. A team carries one or two captains, and co-captains share every captain power.', 3),
-  ('Scheduling', 'How many matches does my team play each week?', 'Four. Each week you face one other team, and both sides split into pairs of two.', 4),
+  ('Scheduling', 'How many matches does my team play each week?', 'Three. Each week you face one other team, and both sides split into pairs of two.', 4),
   ('Scheduling', 'How do we set the day and time of our match?', 'Between yourselves. Open your table to see the opposing pair''s phone and email.', 5),
   ('Scoring',    'Who logs the score?', 'Anyone at the table can log the score. There is no approval step.', 6),
   ('Scoring',    'How does scoring work?', 'Every match is scored from 1 to 999 points.', 7),
